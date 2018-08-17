@@ -4,11 +4,6 @@ import { getRandomTasks } from './api';
 import _ from 'lodash';
 
 class App extends Component {
-  //1. Add a task | add
-  //2. Remove a task | delete
-  //3. Mark completed | update
-  //4. Rename a task | update
-
   constructor(props) {
     super(props);
     this.state = {
@@ -18,89 +13,27 @@ class App extends Component {
   }
 
   addTask = (e) => {
-    const text = this.state.newTaskText;
 
-    const tasks = this.state.tasks;
-    const lastId = _.maxBy(tasks, 'id');
-
-    this.setState({
-      tasks: [
-        ...tasks,
-        {
-          id: lastId + 1,
-          text,
-          completed: false
-        }
-      ]
-    })
   };
 
   removeTask = (taskId) => {
-    const tasks = this.state.tasks;
 
-    const updatedTasks = tasks.filter(t => t.id !== taskId);
-
-    this.setState({
-      tasks: updatedTasks
-    });
   };
 
   markCompletedTask = (taskId, e) => {
-    const tasks = this.state.tasks;
-    let updatedTasks = [];
 
-    tasks.forEach(task => {
-      if (task.id !== taskId) updatedTasks.push(task);
-      updatedTasks.push({
-        ...task,
-        completed: !task.completed
-      });
-    });
-
-    this.setState({
-      tasks: updatedTasks
-    });
   };
 
   renameTask = (taskId, e) => {
-    const text = _.get(e, ['target', 'value'], '');
 
-    const tasks = this.state.tasks;
-    let updatedTasks = [];
-
-    tasks.forEach(task => {
-      if (task.id !== taskId) updatedTasks.push(task);
-      updatedTasks.push({
-        ...task,
-        text
-      });
-    });
-
-    this.setState({
-      tasks: updatedTasks
-    });
   };
 
   updateNewTaskText = (e) => {
-    const newTaskText = _.get(e, ['target', 'value'], '');
 
-    this.setState({
-      newTaskText
-    });
   };
 
   fetchTasks = async () => {
-    let tasks = await getRandomTasks();
 
-    tasks = tasks.map(t => {
-      return {
-        id: +t.id,
-        text: t.text,
-        completed: t.completed
-      }
-    });
-
-    this.setState({tasks});
   };
 
   componentDidMount() {
