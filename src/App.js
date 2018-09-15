@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './index.css';
-import { getRandomTasks } from './api';
-import _ from 'lodash';
+import {get, maxBy} from 'lodash';
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class App extends Component {
     this.currentEditingLi = React.createRef();
   }
 
-  completedTasksCount = () => {
+  tasksLeftCount = () => {
     return this.state.tasks.filter(t => !t.completed).length;
   }
 
@@ -27,16 +26,16 @@ class App extends Component {
 
     const tasks = this.state.tasks;
 
-    this.setState({
-      tasks: [
-        ...tasks,
-        {
-          id: this.getNewId(tasks),
-          text,
-          completed: false
-        }
-      ]
-    });
+    const updatedTasks = [
+      ...tasks,
+      {
+        id: this.getNewId(tasks),
+        text,
+        completed: false
+      }
+    ];
+
+    this.updateTasks(updatedTasks);
   };
 
   removeTask = (taskId) => {
@@ -44,9 +43,7 @@ class App extends Component {
 
     const updatedTasks = tasks.filter(t => t.id !== taskId);
 
-    this.setState({
-      tasks: updatedTasks
-    });
+    this.updateTasks(updatedTasks);
   };
 
   changeTaskCompleted = (taskId) => {
@@ -65,9 +62,7 @@ class App extends Component {
       });
     });
 
-    this.setState({
-      tasks: updatedTasks
-    });
+    this.updateTasks(updatedTasks);
   };
 
   renameTask = (taskId, e) => {
@@ -86,32 +81,18 @@ class App extends Component {
     });
 
     this.setState({
-      tasks: updatedTasks,
       editing: true,
       editingId : taskId
     });
+    this.updateTasks(updatedTasks);
   };
 
   updateNewTaskText = (e) => {
-    const newTaskText = _.get(e, ['target', 'value'], '');
+    const newTaskText = get(e, ['target', 'value'], '');
 
     this.setState({
       newTaskText
     });
-  };
-
-  fetchTasks = async () => {
-    let tasks = await getRandomTasks();
-
-    tasks = tasks.map(t => {
-      return {
-        id: +t.id,
-        text: t.text,
-        completed: t.completed
-      }
-    });
-
-    this.setState({tasks});
   };
 
   handleKeyPress = (e) => {
@@ -130,30 +111,28 @@ class App extends Component {
   toggleAllTasks = () => {
     let tasks = this.state.tasks;
     let updatedTasks = [];
+    const tasksLeft = this.tasksLeftCount();
+    if (tasksLeft !== 0) {
+      updatedTasks = tasks.map(task => ({...task, completed: true}))
+    } else {
+      updatedTasks = tasks.map(task => ({...task, completed: false}))
+    }
 
-    tasks.forEach(task => {
-      updatedTasks.push({
-        ...task,
-        completed: true
-      })
-    });
+    this.updateTasks(updatedTasks);
   };
 
   getNewId = (tasks) => {
-    let lastId = _.get(_.maxBy(tasks, 'id'), 'id') || 0;
+    let lastId = get(maxBy(tasks, 'id'), 'id') || 0;
     return ++lastId;
   }
 
   clearCompleted = () => {
     const tasks = this.state.tasks;
-
-    this.setState({
-      tasks: tasks.filter(t => !t.completed)
-    })
+    this.updateTasks(tasks.filter(t => !t.completed));
   }
 
   handleEditInputOnChange = (taskId, e) => {
-    const newText = _.get(e, 'target.value', '')
+    const newText = get(e, 'target.value', '')
     let updatedTasks = [];
     this.state.tasks.forEach(task => {
       if (task.id === taskId) {
@@ -166,9 +145,14 @@ class App extends Component {
       updatedTasks.push(task);
     })
     
+    this.updateTasks(updatedTasks);
+  }
+
+  updateTasks = (tasks) => {
     this.setState({
-      tasks: updatedTasks
-    })
+      tasks
+    });
+    this.updateTasksInLocalStorage(tasks);
   }
 
   handleEditInputBlur = (completed) => {
@@ -181,10 +165,19 @@ class App extends Component {
     }
   }
 
+  readTasksFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem('tasks')) || [];
+  }
+
+  updateTasksInLocalStorage = (tasks) => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
   componentDidMount() {
-    this.fetchTasks();
+    const tasks = this.readTasksFromLocalStorage();
     const filter = window.location.hash.slice(2)
-    if (filter) this.setState({filter})
+
+    this.setState(filter ? {tasks, filter} : {tasks})
   }
 
   componentDidUpdate() {
@@ -196,7 +189,7 @@ class App extends Component {
     const classNameActive = this.state.filter === 'active' ? 'selected' : '';
     const classNameCompleted = this.state.filter === 'completed' ? 'selected' : '';
 
-    const tasksCompletedCount = this.completedTasksCount()
+    const tasksLeft = this.tasksLeftCount()
 
     return (
       <section className="todoapp">
@@ -207,14 +200,16 @@ class App extends Component {
             placeholder="What needs to be done?"
             onChange={this.updateNewTaskText}
             onKeyPress={this.handleKeyPress}
-            value={this.state.newTaskText}>
-          </input>
+            value={this.state.newTaskText}
+          ></input>
         </header>
         <section className="main">
           <input className="toggle-all"
            type="checkbox"
            onClick={this.toggleAllTasks}
-           checked={false}
+           ref={this.toggleAllCheckboxRef}
+           checked={!tasksLeft}
+           onChange={() => {}}
           ></input>
           <ul className="todo-list">
             {this.state.tasks.map((task, i) => {
@@ -234,8 +229,7 @@ class App extends Component {
                               onChange={(e) => this.handleEditInputOnChange(task.id, e)}
                               onBlur={() => this.handleEditInputBlur(task.completed)}
                               onKeyPress={this.handleEditInputKeyPress}
-                              >
-                            </input>
+                            ></input>
               }
               return (<li key={i} className={completedLiClassName} ref={liRef}>
                 <div className="view">
@@ -256,22 +250,20 @@ class App extends Component {
             })}
           </ul>
         </section>
-        <footer className="footer">
-          <span className="todo-count">
-            <strong>{tasksCompletedCount}</strong>
-            <span> </span>
-            <span>{tasksCompletedCount === 1 ? 'item' : 'items'}</span>
-            <span> left</span>
-          </span>
-          <ul className="filters">
-            <li><a href="#/" className={classNameAll} onClick={() => this.filterTasks('all')}>All</a></li>
-            <span> </span>
-            <li ><a href="#/active" className={classNameActive} onClick={() => this.filterTasks('active')}>Active</a></li>
-            <span> </span>
-            <li ><a href="#/completed" className={classNameCompleted} onClick={() => this.filterTasks('completed')}>Completed</a></li>
-          </ul>
-          <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
-        </footer>
+        {this.state.tasks.length ?         
+          <footer className="footer">
+            <span className="todo-count">
+              <strong>{tasksLeft}</strong>
+              <span>{tasksLeft === 1 ? ' item' : ' items'} left</span>
+            </span>
+            <ul className="filters">
+              <li><a href="#/" className={classNameAll} onClick={() => this.filterTasks('all')}>All</a></li>
+              <li ><a href="#/active" className={classNameActive} onClick={() => this.filterTasks('active')}>Active</a></li>
+              <li ><a href="#/completed" className={classNameCompleted} onClick={() => this.filterTasks('completed')}>Completed</a></li>
+            </ul>
+            <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
+          </footer>
+        : null}
       </section>
     );
   }
