@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../node_modules/todomvc-app-css/index.css';
+import './index.css';
 import { getRandomTasks } from './api';
 import _ from 'lodash';
 
@@ -13,6 +13,9 @@ class App extends Component {
       editing: false,
       editingId: null
     };
+
+    this.currentEditInput = React.createRef();
+    this.currentEditingLi = React.createRef();
   }
 
   completedTasksCount = () => {
@@ -23,13 +26,12 @@ class App extends Component {
     const text = this.state.newTaskText;
 
     const tasks = this.state.tasks;
-    const lastId = _.maxBy(tasks, 'id').id;
 
     this.setState({
       tasks: [
         ...tasks,
         {
-          id: lastId + 1,
+          id: this.getNewId(tasks),
           text,
           completed: false
         }
@@ -38,7 +40,6 @@ class App extends Component {
   };
 
   removeTask = (taskId) => {
-    console.log('removeTask taskId', taskId);
     const tasks = this.state.tasks;
 
     const updatedTasks = tasks.filter(t => t.id !== taskId);
@@ -70,21 +71,24 @@ class App extends Component {
   };
 
   renameTask = (taskId, e) => {
-    const text = _.get(e, ['target', 'value'], '');
+    setTimeout(() => {this.currentEditInput.current.focus()}, 1)
 
     const tasks = this.state.tasks;
     let updatedTasks = [];
-
     tasks.forEach(task => {
-      if (task.id !== taskId) updatedTasks.push(task);
+      if (task.id !== taskId) {
+        updatedTasks.push(task);
+        return;
+      }
       updatedTasks.push({
-        ...task,
-        text
+        ...task
       });
     });
 
     this.setState({
-      tasks: updatedTasks
+      tasks: updatedTasks,
+      editing: true,
+      editingId : taskId
     });
   };
 
@@ -123,8 +127,64 @@ class App extends Component {
     this.setState({filter});
   };
 
+  toggleAllTasks = () => {
+    let tasks = this.state.tasks;
+    let updatedTasks = [];
+
+    tasks.forEach(task => {
+      updatedTasks.push({
+        ...task,
+        completed: true
+      })
+    });
+  };
+
+  getNewId = (tasks) => {
+    let lastId = _.get(_.maxBy(tasks, 'id'), 'id') || 0;
+    return ++lastId;
+  }
+
+  clearCompleted = () => {
+    const tasks = this.state.tasks;
+
+    this.setState({
+      tasks: tasks.filter(t => !t.completed)
+    })
+  }
+
+  handleEditInputOnChange = (taskId, e) => {
+    const newText = _.get(e, 'target.value', '')
+    let updatedTasks = [];
+    this.state.tasks.forEach(task => {
+      if (task.id === taskId) {
+        updatedTasks.push({
+          ...task,
+          text: newText
+        })
+        return;
+      }
+      updatedTasks.push(task);
+    })
+    
+    this.setState({
+      tasks: updatedTasks
+    })
+  }
+
+  handleEditInputBlur = (completed) => {
+    this.currentEditingLi.current.className = completed ? 'completed' : ''
+  }
+
+  handleEditInputKeyPress = (e) => {
+    if(e.key === 'Enter') {
+      this.currentEditInput.current.blur();
+    }
+  }
+
   componentDidMount() {
     this.fetchTasks();
+    const filter = window.location.hash.slice(2)
+    if (filter) this.setState({filter})
   }
 
   componentDidUpdate() {
@@ -135,6 +195,8 @@ class App extends Component {
     const classNameAll = this.state.filter === 'all' ? 'selected' : '';
     const classNameActive = this.state.filter === 'active' ? 'selected' : '';
     const classNameCompleted = this.state.filter === 'completed' ? 'selected' : '';
+
+    const tasksCompletedCount = this.completedTasksCount()
 
     return (
       <section className="todoapp">
@@ -149,37 +211,56 @@ class App extends Component {
           </input>
         </header>
         <section className="main">
-          <input className="toggle-all" type="checkbox"></input>
+          <input className="toggle-all"
+           type="checkbox"
+           onClick={this.toggleAllTasks}
+           checked={false}
+          ></input>
           <ul className="todo-list">
-            {this.state.tasks.map(task => {
+            {this.state.tasks.map((task, i) => {
               if (this.state.filter === 'active' && task.completed) return false;
               if (this.state.filter === 'completed' && !task.completed) return false;
 
               let completedLiClassName = task.completed ? 'completed' : '';
-              if (this.state.editing && this.state.editingId === task.id) completedLiClassName += ' editing';
-              return (<li className={completedLiClassName}>
+              let editInput = <input className="edit"></input>
+              let liRef = null;
+              if (this.state.editing && this.state.editingId === task.id) {
+                liRef = this.currentEditingLi;
+                completedLiClassName += ' editing';
+                editInput = <input 
+                              className="edit"
+                              ref={this.currentEditInput}
+                              value={task.text}
+                              onChange={(e) => this.handleEditInputOnChange(task.id, e)}
+                              onBlur={() => this.handleEditInputBlur(task.completed)}
+                              onKeyPress={this.handleEditInputKeyPress}
+                              >
+                            </input>
+              }
+              return (<li key={i} className={completedLiClassName} ref={liRef}>
                 <div className="view">
                   <input 
                     className="toggle"
                     type="checkbox"
                     checked={task.completed}
-                    onClick={() => this.changeTaskCompleted(task.id)}>
+                    onChange={() => this.changeTaskCompleted(task.id)}>
                   </input>
-                  <label dbclick={(e) => this.renameTask(task.id, e)}>{task.text}</label>
+                  <label onDoubleClick={(e) => this.renameTask(task.id, e)}>{task.text}</label>
                   <button 
                     className="destroy"
                     onClick={() => this.removeTask(task.id)}>
                   </button>
                 </div>
+                {editInput}
               </li>)
             })}
           </ul>
         </section>
         <footer className="footer">
           <span className="todo-count">
-            <strong>{this.completedTasksCount()}</strong>
+            <strong>{tasksCompletedCount}</strong>
             <span> </span>
-            <span>items</span>
+            <span>{tasksCompletedCount === 1 ? 'item' : 'items'}</span>
             <span> left</span>
           </span>
           <ul className="filters">
@@ -189,6 +270,7 @@ class App extends Component {
             <span> </span>
             <li ><a href="#/completed" className={classNameCompleted} onClick={() => this.filterTasks('completed')}>Completed</a></li>
           </ul>
+          <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
         </footer>
       </section>
     );
