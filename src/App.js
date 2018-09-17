@@ -1,183 +1,191 @@
-import React, { Component } from 'react';
-import './index.css';
-import {get, maxBy} from 'lodash';
+import React, { Component } from "react";
+import "./index.css";
+import { get } from "lodash";
+import {
+  readTodosFromLocalStorage,
+  updateTodosInLocalStorage
+} from "./utils/local-storage";
+import { getNewId } from "./utils/utils";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
-      newTaskText: '',
-      filter: 'all',
+      todos: [],
+      newTodoText: "",
       editing: false,
-      editingId: null
+      editingId: null,
+      filters: {
+        all: true,
+        active: false,
+        completed: false
+      }
     };
 
-    this.currentEditInput = React.createRef();
-    this.currentEditingLi = React.createRef();
+    this.editingEditInputRef = React.createRef();
+    this.editingEditLiRef = React.createRef();
   }
 
-  tasksLeftCount = () => {
-    return this.state.tasks.filter(t => !t.completed).length;
-  }
+  todosLeftCount = () => {
+    return this.state.todos.filter(t => !t.completed).length;
+  };
 
-  addTask = () => {
-    const text = this.state.newTaskText;
+  addTodo = () => {
+    const text = this.state.newTodoText;
 
-    const tasks = this.state.tasks;
+    const todos = this.state.todos;
 
-    const updatedTasks = [
-      ...tasks,
+    const updatedTodos = [
+      ...todos,
       {
-        id: this.getNewId(tasks),
+        id: getNewId(todos),
         text,
         completed: false
       }
     ];
 
-    this.updateTasks(updatedTasks);
+    this.updateTodos(updatedTodos);
   };
 
-  removeTask = (taskId) => {
-    const tasks = this.state.tasks;
+  handleRemove = todoId => {
+    const todos = this.state.todos;
 
-    const updatedTasks = tasks.filter(t => t.id !== taskId);
+    const updatedTodos = todos.filter(t => t.id !== todoId);
 
-    this.updateTasks(updatedTasks);
+    this.updateTodos(updatedTodos);
   };
 
-  changeTaskCompleted = (taskId) => {
-    const tasks = this.state.tasks;
-    let updatedTasks = [];
+  handleToggleTodo = todoId => {
+    const todos = this.state.todos;
+    let updatedTodos = [];
 
-    tasks.forEach(task => {
-      if (task.id !== taskId) {
-        updatedTasks.push(task);
+    todos.forEach(todo => {
+      if (todo.id !== todoId) {
+        updatedTodos.push(todo);
         return;
       }
 
-      updatedTasks.push({
-        ...task,
-        completed: !task.completed
+      updatedTodos.push({
+        ...todo,
+        completed: !todo.completed
       });
     });
 
-    this.updateTasks(updatedTasks);
+    this.updateTodos(updatedTodos);
   };
 
-  renameTask = (taskId, e) => {
-    setTimeout(() => {this.currentEditInput.current.focus()}, 1)
+  handleEdit = (todoId, e) => {
+    setTimeout(() => {
+      this.editingEditInputRef.current.focus();
+    }, 1);
 
-    const tasks = this.state.tasks;
-    let updatedTasks = [];
-    tasks.forEach(task => {
-      if (task.id !== taskId) {
-        updatedTasks.push(task);
+    const todos = this.state.todos;
+    let updatedTodos = [];
+    todos.forEach(todo => {
+      if (todo.id !== todoId) {
+        updatedTodos.push(todo);
         return;
       }
-      updatedTasks.push({
-        ...task
+      updatedTodos.push({
+        ...todo
       });
     });
 
     this.setState({
       editing: true,
-      editingId : taskId
+      editingId: todoId
     });
-    this.updateTasks(updatedTasks);
+    this.updateTodos(updatedTodos);
   };
 
-  updateNewTaskText = (e) => {
-    const newTaskText = get(e, ['target', 'value'], '');
+  handleNewTodoChange = e => {
+    const newTodoText = get(e, ["target", "value"], "");
 
     this.setState({
-      newTaskText
+      newTodoText
     });
   };
 
-  handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      this.addTask();
+  handleNewTodoKeyPress = e => {
+    if (e.key === "Enter") {
+      this.addTodo();
       this.setState({
-        newTaskText: ''
+        newTodoText: ""
       });
     }
-  }
-
-  filterTasks = (filter) => {
-    this.setState({filter});
   };
 
-  toggleAllTasks = () => {
-    let tasks = this.state.tasks;
-    let updatedTasks = [];
-    const tasksLeft = this.tasksLeftCount();
-    if (tasksLeft !== 0) {
-      updatedTasks = tasks.map(task => ({...task, completed: true}))
+  filterTodos = activatedFilterName => {
+    let updatedFilters = {
+      all: false,
+      active: false,
+      completed: false
+    };
+
+    updatedFilters[activatedFilterName] = true;
+
+    this.setState({
+      filters: updatedFilters
+    });
+  };
+
+  handleToggleAllTodosClick = () => {
+    let todos = this.state.todos;
+    let updatedTodos = [];
+    const todosLeft = this.todosLeftCount();
+    if (todosLeft !== 0) {
+      updatedTodos = todos.map(todo => ({ ...todo, completed: true }));
     } else {
-      updatedTasks = tasks.map(task => ({...task, completed: false}))
+      updatedTodos = todos.map(todo => ({ ...todo, completed: false }));
     }
 
-    this.updateTasks(updatedTasks);
+    this.updateTodos(updatedTodos);
   };
 
-  getNewId = (tasks) => {
-    let lastId = get(maxBy(tasks, 'id'), 'id') || 0;
-    return ++lastId;
-  }
+  handleClearCompleted = () => {
+    const todos = this.state.todos;
+    this.updateTodos(todos.filter(t => !t.completed));
+  };
 
-  clearCompleted = () => {
-    const tasks = this.state.tasks;
-    this.updateTasks(tasks.filter(t => !t.completed));
-  }
-
-  handleEditInputOnChange = (taskId, e) => {
-    const newText = get(e, 'target.value', '')
-    let updatedTasks = [];
-    this.state.tasks.forEach(task => {
-      if (task.id === taskId) {
-        updatedTasks.push({
-          ...task,
+  handleEdit = (todoId, e) => {
+    const newText = get(e, "target.value", "");
+    let updatedTodos = [];
+    this.state.todos.forEach(todo => {
+      if (todo.id === todoId) {
+        updatedTodos.push({
+          ...todo,
           text: newText
-        })
+        });
         return;
       }
-      updatedTasks.push(task);
-    })
-    
-    this.updateTasks(updatedTasks);
-  }
-
-  updateTasks = (tasks) => {
-    this.setState({
-      tasks
+      updatedTodos.push(todo);
     });
-    this.updateTasksInLocalStorage(tasks);
-  }
 
-  handleEditInputBlur = (completed) => {
-    this.currentEditingLi.current.className = completed ? 'completed' : ''
-  }
+    this.updateTodos(updatedTodos);
+  };
 
-  handleEditInputKeyPress = (e) => {
-    if(e.key === 'Enter') {
-      this.currentEditInput.current.blur();
+  updateTodos = todos => {
+    this.setState({
+      todos
+    });
+    updateTodosInLocalStorage(todos);
+  };
+
+  handleBlur = completed => {
+    this.editingEditLiRef.current.className = completed ? "completed" : "";
+  };
+
+  handleEditTodoKeyPress = e => {
+    if (e.key === "Enter") {
+      this.editingEditInputRef.current.blur();
     }
-  }
-
-  readTasksFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem('tasks')) || [];
-  }
-
-  updateTasksInLocalStorage = (tasks) => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
+  };
 
   componentDidMount() {
-    const tasks = this.readTasksFromLocalStorage();
-    const filter = window.location.hash.slice(2)
+    const todos = readTodosFromLocalStorage();
+    const filter = window.location.hash.slice(2);
 
-    this.setState(filter ? {tasks, filter} : {tasks})
+    this.setState(filter ? { todos, filter } : { todos });
   }
 
   componentDidUpdate() {
@@ -185,86 +193,228 @@ class App extends Component {
   }
 
   render() {
-    const classNameAll = this.state.filter === 'all' ? 'selected' : '';
-    const classNameActive = this.state.filter === 'active' ? 'selected' : '';
-    const classNameCompleted = this.state.filter === 'completed' ? 'selected' : '';
-
-    const tasksLeft = this.tasksLeftCount()
-
+    const todosLeft = this.todosLeftCount();
     return (
       <section className="todoapp">
-        <header>
-          <h1>todos</h1>
-          <input 
-            className="new-todo"
-            placeholder="What needs to be done?"
-            onChange={this.updateNewTaskText}
-            onKeyPress={this.handleKeyPress}
-            value={this.state.newTaskText}
-          ></input>
-        </header>
+        <Header
+          onChange={this.handleNewTodoChange}
+          onKeyPress={this.handleNewTodoKeyPress}
+          value={this.newTodoText}
+        />
         <section className="main">
-          <input className="toggle-all"
-           type="checkbox"
-           onClick={this.toggleAllTasks}
-           ref={this.toggleAllCheckboxRef}
-           checked={!tasksLeft}
-           onChange={() => {}}
-          ></input>
-          <ul className="todo-list">
-            {this.state.tasks.map((task, i) => {
-              if (this.state.filter === 'active' && task.completed) return false;
-              if (this.state.filter === 'completed' && !task.completed) return false;
-
-              let completedLiClassName = task.completed ? 'completed' : '';
-              let editInput = <input className="edit"></input>
-              let liRef = null;
-              if (this.state.editing && this.state.editingId === task.id) {
-                liRef = this.currentEditingLi;
-                completedLiClassName += ' editing';
-                editInput = <input 
-                              className="edit"
-                              ref={this.currentEditInput}
-                              value={task.text}
-                              onChange={(e) => this.handleEditInputOnChange(task.id, e)}
-                              onBlur={() => this.handleEditInputBlur(task.completed)}
-                              onKeyPress={this.handleEditInputKeyPress}
-                            ></input>
-              }
-              return (<li key={i} className={completedLiClassName} ref={liRef}>
-                <div className="view">
-                  <input 
-                    className="toggle"
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => this.changeTaskCompleted(task.id)}>
-                  </input>
-                  <label onDoubleClick={(e) => this.renameTask(task.id, e)}>{task.text}</label>
-                  <button 
-                    className="destroy"
-                    onClick={() => this.removeTask(task.id)}>
-                  </button>
-                </div>
-                {editInput}
-              </li>)
-            })}
-          </ul>
+          <input
+            className="toggle-all"
+            type="checkbox"
+            onClick={this.handleToggleAllTodosClick}
+            ref={this.toggleAllCheckboxRef}
+            checked={!todosLeft}
+            onChange={() => {}}
+          />
+          <TodoList
+            onToggleTodo={() => this.handleToggleTodo(todo.id)}
+            onEditTodo={e => this.handleEdit(todo.id, e)}
+            onRemoveTodo={() => this.handleRemove(todo.id)}
+            onChangeTodo={e => this.handleEdit(todo.id, e)}
+            onBlurTodo={() => this.handleBlur(todo.completed)}
+            onKeyPressTodo={this.handleEditTodoKeyPress}
+          />
         </section>
-        {this.state.tasks.length ?         
-          <footer className="footer">
-            <span className="todo-count">
-              <strong>{tasksLeft}</strong>
-              <span>{tasksLeft === 1 ? ' item' : ' items'} left</span>
-            </span>
-            <ul className="filters">
-              <li><a href="#/" className={classNameAll} onClick={() => this.filterTasks('all')}>All</a></li>
-              <li ><a href="#/active" className={classNameActive} onClick={() => this.filterTasks('active')}>Active</a></li>
-              <li ><a href="#/completed" className={classNameCompleted} onClick={() => this.filterTasks('completed')}>Completed</a></li>
-            </ul>
-            <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
-          </footer>
-        : null}
+        <Footer
+          display={!!this.state.todos.length}
+          todosLeft={todosLeft}
+          filters={this.state.filters}
+          filterTodos={this.filterTodos}
+          clearCompleted={this.handleClearCompleted}
+        />
       </section>
+    );
+  }
+}
+
+class Filters extends React.Component {
+  render() {
+    const { filters, filterTodos } = this.props;
+
+    return (
+      <ul className="filters">
+        {filters.entries(([filter, activated]) => {
+          return (
+            <li>
+              <a
+                href={"#/" + (filter === "all" ? "" : filter)}
+                className={activated ? "selected" : ""}
+                onClick={() => filterTodos(filter)}
+              >
+                {filter.charAt[0].toUpperCase() + filter.slice(1)}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+}
+
+class TodoList extends React.Component {
+  render() {
+    const {
+      todos,
+      filter,
+      editing,
+      editingId,
+      editingEditLiRef,
+      editingEditInputRef,
+      onToggleTodo,
+      onEditTodo,
+      onRemoveTodo,
+      onChange,
+      onBlur,
+      onKeyPress
+    } = this.props;
+    return (
+      <ul className="todo-list">
+        {todos.map((todo, i) => {
+          if (filter === "active" && todo.completed) return false;
+          if (filter === "completed" && !todo.completed) return false;
+
+          let completedLiClassName = todo.completed ? "completed" : "";
+          let liRef = null;
+
+          const displayEditInput = editing && editingId === todo.id;
+
+          if (displayEditInput) {
+            liRef = editingEditLiRef;
+            completedLiClassName += " editing";
+          }
+          return (
+            <Todo
+              key={i}
+              className={completedLiClassName}
+              liRef={liRef}
+              checked={todo.completed}
+              onToggleTodo={onToggleTodo}
+              onEditTodo={onEditTodo}
+              labelText={todo.text}
+              onRemoveTodo={onRemoveTodo}
+              editingEditInputRef={editingEditInputRef}
+              onChange={onChange}
+              onBlur={onBlur}
+              onKeyPress={onKeyPress}
+              displayEditInput={displayEditInput}
+            />
+          );
+        })}
+      </ul>
+    );
+  }
+}
+
+class Todo extends React.Component {
+  render() {
+    const {
+      className,
+      liRef,
+      todo,
+      onToggle,
+      onEdit,
+      onRemove,
+      onChange,
+      onBlur,
+      onKeyPress,
+      display,
+      editingEditInputRef
+    } = this.props;
+    return (
+      <li className={className} ref={liRef}>
+        <div className="view">
+          <ToggleTodo checked={todo.completed} onChange={onToggle} />
+          <label onDoubleClick={onEdit}>{todo.text}</label>
+          <button className="destroy" onClick={onRemove} />
+        </div>
+        <EditInput
+          ref={editingEditInputRef}
+          value={todo.text}
+          onChange={onChange}
+          onBlur={onBlur}
+          onKeyPress={onKeyPress}
+          display={display}
+        />
+      </li>
+    );
+  }
+}
+
+class Footer extends React.Component {
+  render() {
+    const {
+      display,
+      todosLeft,
+      filters,
+      filterTodos,
+      clearCompleted
+    } = this.props;
+
+    if (!display) return null;
+
+    return (
+      <footer className="footer">
+        <span className="todo-count">
+          <strong>{todosLeft}</strong>
+          <span>{todosLeft === 1 ? " item" : " items"} left</span>
+        </span>
+        <Filters filters={filters} filterTodos={filterTodos} />
+        <button className="clear-completed" onClick={clearCompleted}>
+          Clear completed
+        </button>
+      </footer>
+    );
+  }
+}
+
+class Header extends React.Component {
+  render() {
+    return (
+      <header>
+        <h1>todos</h1>
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          onChange={this.props.onChange}
+          onKeyPress={this.props.onKeyPress}
+          value={this.props.value}
+        />
+      </header>
+    );
+  }
+}
+
+class EditInput extends React.Component {
+  render() {
+    if (!this.props.display) {
+      return <input className="edit" />;
+    }
+    return (
+      <input
+        className="edit"
+        ref={this.props.ref}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        onBlur={this.props.onBlur}
+        onKeyPress={this.props.onKeyPress}
+      />
+    );
+  }
+}
+
+class ToggleTodo extends React.Component {
+  render() {
+    return (
+      <input
+        className="toggle"
+        type="checkbox"
+        checked={this.props.checked}
+        onChange={this.props.onChange}
+      />
     );
   }
 }
