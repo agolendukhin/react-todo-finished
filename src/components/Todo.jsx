@@ -16,8 +16,6 @@ export default class Todo extends Component {
         completed,
       }),
     }
-
-    this.liRef = React.createRef()
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -48,7 +46,7 @@ export default class Todo extends Component {
     })
   }
 
-  handleBlur = () => {
+  resetLiClassName = () => {
     const { completed } = this.state
     this.setState({
       className: classNames({
@@ -67,17 +65,16 @@ export default class Todo extends Component {
     } = this.props
 
     return (
-      <li className={className} ref={this.liRef}>
+      <li className={className}>
         <div className="view">
           <ToggleTodo todo={todo} handleToggleTodo={handleToggleTodo} />
           <label onDoubleClick={this.handleDoubleClick}>{todo.text}</label>
           <button className="destroy" onClick={() => handleRemove(todo.id)} />
         </div>
         <EditInput
-          liRef={this.liRef}
           todo={todo}
           handleEditTodoFinished={handleEditTodoFinished}
-          handleBlur={this.handleBlur}
+          resetLiClassName={this.resetLiClassName}
         />
       </li>
     )
