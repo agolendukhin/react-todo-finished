@@ -17,8 +17,6 @@ class App extends Component {
     super(props)
     this.state = {
       todos: [],
-      editing: false,
-      editingId: null,
       filters: {
         all: true,
         active: false,
@@ -65,13 +63,6 @@ class App extends Component {
     this.updateTodos(updatedTodos)
   }
 
-  handleEditTodoOnDoubleClick = todoId => {
-    this.setState({
-      editing: true,
-      editingId: todoId,
-    })
-  }
-
   handleFilters = activatedFilterName => {
     this.setState({
       filters: {
@@ -102,13 +93,8 @@ class App extends Component {
     this.updateTodos(todos.filter(t => !t.completed))
   }
 
-  handleEditTodoOnChangeFinished = changedTodo => {
+  handleEditTodoFinished = changedTodo => {
     const { todos } = this.state
-
-    this.setState({
-      editing: false,
-      editingId: null,
-    })
 
     const updatedTodos = todos.map(
       todo => (todo.id !== changedTodo.id ? todo : changedTodo)
@@ -158,7 +144,7 @@ class App extends Component {
             editingId={editingId}
             handleToggleTodo={this.handleToggleTodo}
             handleRemove={this.handleRemove}
-            handleEditTodoOnChangeFinished={this.handleEditTodoOnChangeFinished}
+            handleEditTodoFinished={this.handleEditTodoFinished}
             handleEditTodoOnDoubleClick={this.handleEditTodoOnDoubleClick}
           />
         </section>

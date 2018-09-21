@@ -7,15 +7,13 @@ class VisibleTodoList extends Component {
     const {
       todos,
       filters,
-      editing,
-      editingId,
       handleToggleTodo,
       handleEditTodoOnChange,
       handleEditTodoOnDoubleClick,
       handleRemove,
       handleBlur,
       handleEditTodoKeyPress,
-      handleEditTodoOnChangeFinished,
+      handleEditTodoFinished,
     } = this.props
 
     const filter = findKey(filters, f => f)
@@ -26,19 +24,10 @@ class VisibleTodoList extends Component {
           if (filter === 'active' && todo.completed) return false
           if (filter === 'completed' && !todo.completed) return false
 
-          let completedLiClassName = todo.completed ? 'completed' : ''
-
-          const displayEditInput = editing && editingId === todo.id
-
-          if (displayEditInput) {
-            completedLiClassName += ' editing'
-          }
-
           return (
             <Todo
               key={i}
               todo={todo}
-              className={completedLiClassName}
               checked={todo.completed}
               handleToggleTodo={handleToggleTodo}
               handleEditTodoOnChange={handleEditTodoOnChange}
@@ -47,8 +36,7 @@ class VisibleTodoList extends Component {
               handleRemove={handleRemove}
               handleBlur={handleBlur}
               handleEditTodoKeyPress={handleEditTodoKeyPress}
-              displayEditInput={displayEditInput}
-              handleEditTodoOnChangeFinished={handleEditTodoOnChangeFinished}
+              handleEditTodoFinished={handleEditTodoFinished}
             />
           )
         })}

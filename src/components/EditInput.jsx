@@ -17,14 +17,16 @@ class EditInput extends Component {
 
   onBlur = () => {
     const { value: text } = this.state
-    const { todo, liRef, handleEditTodoOnChangeFinished } = this.props
+    const { todo, liRef, handleEditTodoFinished, handleBlur } = this.props
 
     liRef.current.className = todo.completed ? 'completed' : ''
 
-    handleEditTodoOnChangeFinished({
+    handleEditTodoFinished({
       ...todo,
       text,
     })
+
+    handleBlur()
   }
 
   onKeyPress = e => {
