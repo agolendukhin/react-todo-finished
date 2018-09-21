@@ -25,9 +25,6 @@ class App extends Component {
         completed: false,
       },
     }
-
-    this.editingEditLiRef = React.createRef()
-    this.editingEditInputRef = React.createRef()
   }
 
   activeTodosCount = () => {
@@ -73,10 +70,6 @@ class App extends Component {
       editing: true,
       editingId: todoId,
     })
-
-    setTimeout(() => {
-      this.editingEditInputRef.current.focus()
-    }, 1)
   }
 
   handleFilters = activatedFilterName => {
@@ -163,8 +156,6 @@ class App extends Component {
             filters={filters}
             editing={editing}
             editingId={editingId}
-            editingEditLiRef={this.editingEditLiRef}
-            editingEditInputRef={this.editingEditInputRef}
             handleToggleTodo={this.handleToggleTodo}
             handleRemove={this.handleRemove}
             handleEditTodoOnChangeFinished={this.handleEditTodoOnChangeFinished}

@@ -28,23 +28,16 @@ class EditInput extends Component {
   }
 
   onKeyPress = e => {
-    const { editInputRef } = this.props
     if (e.key === 'Enter') {
-      editInputRef.current.blur()
+      this.onBlur()
     }
   }
 
   render() {
-    const { display, editInputRef } = this.props
-
-    if (!display) {
-      return <input className="edit" />
-    }
-
     return (
       <input
         className="edit"
-        ref={editInputRef}
+        ref={input => input && input.focus()}
         value={this.state.value}
         onChange={this.onChange}
         onBlur={this.onBlur}

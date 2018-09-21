@@ -3,21 +3,20 @@ import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
 
 export default class Todo extends Component {
+  liRef = React.createRef()
+
   render() {
     const {
       className,
-      liRef,
-      editInputRef,
       todo,
       handleToggleTodo,
       handleEditTodoOnDoubleClick,
       handleRemove,
       handleEditTodoOnChangeFinished,
-      displayEditInput,
     } = this.props
 
     return (
-      <li className={className} ref={liRef}>
+      <li className={className} ref={this.liRef}>
         <div className="view">
           <ToggleTodo todo={todo} handleToggleTodo={handleToggleTodo} />
           <label onDoubleClick={() => handleEditTodoOnDoubleClick(todo.id)}>
@@ -26,11 +25,9 @@ export default class Todo extends Component {
           <button className="destroy" onClick={() => handleRemove(todo.id)} />
         </div>
         <EditInput
-          editInputRef={editInputRef}
-          liRef={liRef}
+          liRef={this.liRef}
           todo={todo}
           handleEditTodoOnChangeFinished={handleEditTodoOnChangeFinished}
-          display={displayEditInput}
         />
       </li>
     )

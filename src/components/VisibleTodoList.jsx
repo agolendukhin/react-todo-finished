@@ -9,8 +9,6 @@ class VisibleTodoList extends Component {
       filters,
       editing,
       editingId,
-      editingEditLiRef,
-      editingEditInputRef,
       handleToggleTodo,
       handleEditTodoOnChange,
       handleEditTodoOnDoubleClick,
@@ -30,14 +28,9 @@ class VisibleTodoList extends Component {
 
           let completedLiClassName = todo.completed ? 'completed' : ''
 
-          let liRef = null
-          let editInputRef = null
-
           const displayEditInput = editing && editingId === todo.id
 
           if (displayEditInput) {
-            liRef = editingEditLiRef
-            editInputRef = editingEditInputRef
             completedLiClassName += ' editing'
           }
 
@@ -46,15 +39,12 @@ class VisibleTodoList extends Component {
               key={i}
               todo={todo}
               className={completedLiClassName}
-              liRef={liRef}
-              editInputRef={editInputRef}
               checked={todo.completed}
               handleToggleTodo={handleToggleTodo}
               handleEditTodoOnChange={handleEditTodoOnChange}
               handleEditTodoOnDoubleClick={handleEditTodoOnDoubleClick}
               labelText={todo.text}
               handleRemove={handleRemove}
-              editingEditInputRef={editingEditInputRef}
               handleBlur={handleBlur}
               handleEditTodoKeyPress={handleEditTodoKeyPress}
               displayEditInput={displayEditInput}
