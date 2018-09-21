@@ -1,4 +1,6 @@
-class ToggleTodo extends React.Component {
+import React, { Component } from 'react'
+
+class ToggleTodo extends Component {
   render() {
     return (
       <input

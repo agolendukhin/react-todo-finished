@@ -1,17 +1,19 @@
-class Filters extends React.Component {
+import React, { Component } from 'react'
+
+class Filters extends Component {
   render() {
-    const { filters, filterTodos } = this.props
+    const { filters, handleFilters } = this.props
 
     return (
       <ul className="filters">
-        {filters.entries(([filter, activated]) => {
+        {Object.entries(filters).map(([filter, activated], index) => {
           return (
-            <li>
+            <li key={index}>
               <a
                 href={'#/' + (filter === 'all' ? '' : filter)}
                 className={activated ? 'selected' : ''}
-                onClick={() => filterTodos(filter)}>
-                {filter.charAt[0].toUpperCase() + filter.slice(1)}
+                onClick={() => handleFilters(filter)}>
+                {filter.charAt(0).toUpperCase() + filter.slice(1)}
               </a>
             </li>
           )

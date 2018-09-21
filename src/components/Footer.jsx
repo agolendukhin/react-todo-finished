@@ -1,11 +1,15 @@
-class Footer extends React.Component {
+import React, { Component } from 'react'
+import Filters from './Filters'
+
+class Footer extends Component {
   render() {
     const {
       display,
-      todosLeft,
+      activeTodosCount,
+      completedTodosCount,
       filters,
-      filterTodos,
-      clearCompleted,
+      handleFilters,
+      handleClearCompleted,
     } = this.props
 
     if (!display) return null
@@ -13,16 +17,31 @@ class Footer extends React.Component {
     return (
       <footer className="footer">
         <span className="todo-count">
-          <strong>{todosLeft}</strong>
-          <span>{todosLeft === 1 ? ' item' : ' items'} left</span>
+          <strong>{activeTodosCount}</strong>
+          <span>{activeTodosCount === 1 ? ' item' : ' items'} left</span>
         </span>
-        <Filters filters={filters} filterTodos={filterTodos} />
-        <button className="clear-completed" onClick={clearCompleted}>
-          Clear completed
-        </button>
+        <Filters filters={filters} handleFilters={handleFilters} />
+        <ClearCompletedButton
+          display={completedTodosCount}
+          handleClearCompleted={handleClearCompleted}
+        />
       </footer>
     )
   }
 }
 
-export default Footer;
+class ClearCompletedButton extends Component {
+  render() {
+    const { display, handleClearCompleted } = this.props
+
+    if (!display) return null
+
+    return (
+      <button className="clear-completed" onClick={handleClearCompleted}>
+        Clear completed
+      </button>
+    )
+  }
+}
+
+export default Footer

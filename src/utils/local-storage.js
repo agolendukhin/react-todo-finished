@@ -1,7 +1,7 @@
-export const readTasksFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("todos")) || [];
-};
+export const readTodosFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem('todos')) || []
+}
 
-export const updateTasksInLocalStorage = todos => {
-  localStorage.setItem("todos", JSON.stringify(todos));
-};
+export const updateTodosInLocalStorage = todos => {
+  localStorage.setItem('todos', JSON.stringify(todos))
+}

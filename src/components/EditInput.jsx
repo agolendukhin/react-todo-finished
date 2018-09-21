@@ -1,17 +1,27 @@
-class EditInput extends React.Component {
+import React, { Component } from 'react'
+
+class EditInput extends Component {
   render() {
-    const { display, ref, value, onChange, onBlur, onKeyPress } = this.props
+    const {
+      display,
+      todo,
+      handleEditTodoOnChange,
+      handleBlur,
+      handleEditTodoKeyPress,
+    } = this.props
+
     if (!display) {
       return <input className="edit" />
     }
+
     return (
       <input
         className="edit"
-        ref={ref}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onKeyPress={onKeyPress}
+        ref={input => input && input.focus()}
+        value={todo.text}
+        onChange={e => handleEditTodoOnChange(todo.id, e)}
+        handleBlur={() => handleBlur(todo.completed)}
+        onKeyPress={e => handleEditTodoKeyPress(e)}
       />
     )
   }

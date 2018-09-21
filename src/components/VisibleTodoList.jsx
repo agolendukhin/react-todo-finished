@@ -1,20 +1,26 @@
+import findKey from 'lodash/findKey'
+import React, { Component } from 'react'
 import Todo from './Todo'
-class TodoList extends React.Component {
+
+class VisibleTodoList extends Component {
   render() {
     const {
       todos,
-      filter,
+      filters,
       editing,
       editingId,
       editingEditLiRef,
       editingEditInputRef,
-      onToggleTodo,
-      onEditTodo,
-      onRemoveTodo,
-      onChange,
-      onBlur,
-      onKeyPress,
+      handleToggleTodo,
+      handleEditTodoOnChange,
+      handleEditTodoOnDoubleClick,
+      handleRemove,
+      handleBlur,
+      handleEditTodoKeyPress,
     } = this.props
+
+    const filter = findKey(filters, f => f)
+
     return (
       <ul className="todo-list">
         {todos.map((todo, i) => {
@@ -30,20 +36,22 @@ class TodoList extends React.Component {
             liRef = editingEditLiRef
             completedLiClassName += ' editing'
           }
+
           return (
             <Todo
               key={i}
+              todo={todo}
               className={completedLiClassName}
               liRef={liRef}
               checked={todo.completed}
-              onToggleTodo={onToggleTodo}
-              onEditTodo={onEditTodo}
+              handleToggleTodo={handleToggleTodo}
+              handleEditTodoOnChange={handleEditTodoOnChange}
+              handleEditTodoOnDoubleClick={handleEditTodoOnDoubleClick}
               labelText={todo.text}
-              onRemoveTodo={onRemoveTodo}
+              handleRemove={handleRemove}
               editingEditInputRef={editingEditInputRef}
-              onChange={onChange}
-              onBlur={onBlur}
-              onKeyPress={onKeyPress}
+              handleBlur={handleBlur}
+              handleEditTodoKeyPress={handleEditTodoKeyPress}
               displayEditInput={displayEditInput}
             />
           )
@@ -53,4 +61,4 @@ class TodoList extends React.Component {
   }
 }
 
-export default TodoList
+export default VisibleTodoList

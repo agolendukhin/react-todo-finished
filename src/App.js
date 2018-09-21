@@ -10,7 +10,7 @@ import {
 import { getNewId } from './utils/utils'
 
 import Header from './components/Header'
-import TodoList from './components/TodoList'
+import VisibleTodoList from './components/VisibleTodoList'
 import Footer from './components/Footer'
 
 class App extends Component {
@@ -28,7 +28,6 @@ class App extends Component {
       },
     }
 
-    this.editingEditInputRef = React.createRef()
     this.editingEditLiRef = React.createRef()
   }
 
@@ -77,28 +76,11 @@ class App extends Component {
     this.updateTodos(updatedTodos)
   }
 
-  handleEdit = (todoId, e) => {
-    setTimeout(() => {
-      this.editingEditInputRef.current.focus()
-    }, 1)
-
-    const todos = this.state.todos
-    let updatedTodos = []
-    todos.forEach(todo => {
-      if (todo.id !== todoId) {
-        updatedTodos.push(todo)
-        return
-      }
-      updatedTodos.push({
-        ...todo,
-      })
-    })
-
+  handleEditTodoOnDoubleClick = todoId => {
     this.setState({
       editing: true,
       editingId: todoId,
     })
-    this.updateTodos(updatedTodos)
   }
 
   handleNewTodoChange = e => {
@@ -109,33 +91,28 @@ class App extends Component {
   }
 
   handleNewTodoKeyPress = e => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && this.state.newTodoText) {
       this.addTodo()
-      this.setState({
-        newTodoText: '',
-      })
+      this.setState({ newTodoText: '' })
     }
   }
 
-  filterTodos = activatedFilterName => {
-    let updatedFilters = {
-      all: false,
-      active: false,
-      completed: false,
-    }
-
-    updatedFilters[activatedFilterName] = true
-
+  handleFilters = activatedFilterName => {
     this.setState({
-      filters: updatedFilters,
+      filters: {
+        all: false,
+        active: false,
+        completed: false,
+        [activatedFilterName]: true,
+      },
     })
   }
 
   handleToggleAllTodos = () => {
     const todos = this.state.todos
-    const todosLeft = this.activeTodosCount()
+    const activeTodosCount = this.activeTodosCount()
     let updatedTodos = []
-    if (todosLeft !== 0) {
+    if (activeTodosCount !== 0) {
       updatedTodos = todos.map(todo => ({ ...todo, completed: true }))
     } else {
       updatedTodos = todos.map(todo => ({ ...todo, completed: false }))
@@ -149,7 +126,7 @@ class App extends Component {
     this.updateTodos(todos.filter(t => !t.completed))
   }
 
-  handleEdit = (todoId, e) => {
+  handleEditTodoOnChange = (todoId, e) => {
     const newText = get(e, 'target.value', '')
     let updatedTodos = []
     this.state.todos.forEach(todo => {
@@ -186,45 +163,55 @@ class App extends Component {
   componentDidMount() {
     const todos = readTodosFromLocalStorage()
     const filter = window.location.hash.slice(2)
-    this.setState(filter ? { todos, filter } : { todos })
-  }
-
-  componentDidUpdate() {
-    console.log(this.state)
+    this.setState({
+      todos,
+    })
+    if (filter) this.handleFilters(filter)
   }
 
   render() {
-    const todosLeft = this.activeTodosCount()
+    const { newTodoText, todos, filters, editing, editingId } = this.state
+    const activeTodosCount = this.activeTodosCount()
+    const todosCount = todos.length
+    const completedTodosCount = todosCount - activeTodosCount
     return (
       <section className="todoapp">
         <Header
-          onChange={this.handleNewTodoChange}
-          onKeyPress={this.handleNewTodoKeyPress}
-          value={this.newTodoText}
+          handleNewTodoChange={this.handleNewTodoChange}
+          handleNewTodoKeyPress={this.handleNewTodoKeyPress}
+          newTodoText={newTodoText}
         />
         <section className="main">
-          <input
-            className="toggle-all"
-            type="checkbox"
-            onClick={this.handleToggleAllTodos}
-            checked={!todosLeft}
-            onChange={() => {}}
-          />
-          <TodoList
-            onToggleTodo={() => this.handleToggleTodo(todo.id)}
-            onEditTodo={e => this.handleEdit(todo.id, e)}
-            onRemoveTodo={() => this.handleRemove(todo.id)}
-            onChangeTodo={e => this.handleEdit(todo.id, e)}
-            onBlurTodo={() => this.handleBlur(todo.completed)}
-            onKeyPressTodo={this.handleEditTodoKeyPress}
+          {todos.length ? (
+            <input
+              className="toggle-all"
+              type="checkbox"
+              onClick={this.handleToggleAllTodos}
+              checked={!activeTodosCount}
+              onChange={() => {}}
+            />
+          ) : null}
+          <VisibleTodoList
+            todos={todos}
+            filters={filters}
+            editing={editing}
+            editingId={editingId}
+            editingEditLiRef={this.editingEditLiRef}
+            handleToggleTodo={this.handleToggleTodo}
+            handleEditTodoOnDoubleClick={this.handleEditTodoOnDoubleClick}
+            handleEditTodoOnChange={this.handleEditTodoOnChange}
+            handleRemove={this.handleRemove}
+            handleBlur={this.handleBlur}
+            handleEditTodoKeyPress={this.handleEditTodoKeyPress}
           />
         </section>
         <Footer
-          display={!!this.state.todos.length}
-          todosLeft={todosLeft}
+          display={!!todos.length}
+          activeTodosCount={activeTodosCount}
+          completedTodosCount={completedTodosCount}
           filters={this.state.filters}
-          filterTodos={this.filterTodos}
-          clearCompleted={this.handleClearCompleted}
+          handleFilters={this.handleFilters}
+          handleClearCompleted={this.handleClearCompleted}
         />
       </section>
     )
