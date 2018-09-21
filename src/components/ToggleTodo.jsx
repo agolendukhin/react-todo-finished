@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 
 class ToggleTodo extends Component {
   render() {
+    const { todo, handleToggleTodo } = this.props
     return (
       <input
         className="toggle"
         type="checkbox"
-        checked={this.props.checked}
-        onChange={this.props.onChange}
+        checked={todo.completed}
+        onChange={() => handleToggleTodo(todo.id)}
       />
     )
   }

@@ -7,38 +7,30 @@ export default class Todo extends Component {
     const {
       className,
       liRef,
+      editInputRef,
       todo,
       handleToggleTodo,
-      handleEditTodoOnChange,
       handleEditTodoOnDoubleClick,
       handleRemove,
-      handleBlur,
-      handleEditTodoKeyPress,
-      display,
-      editingEditInputRef,
+      handleEditTodoOnChangeFinished,
+      displayEditInput,
     } = this.props
-
-    const { id, text, completed } = todo
 
     return (
       <li className={className} ref={liRef}>
         <div className="view">
-          <ToggleTodo
-            checked={completed}
-            onChange={() => handleToggleTodo(id)}
-          />
-          <label onDoubleClick={() => handleEditTodoOnDoubleClick(id)}>
-            {text}
+          <ToggleTodo todo={todo} handleToggleTodo={handleToggleTodo} />
+          <label onDoubleClick={() => handleEditTodoOnDoubleClick(todo.id)}>
+            {todo.text}
           </label>
-          <button className="destroy" onClick={() => handleRemove(id)} />
+          <button className="destroy" onClick={() => handleRemove(todo.id)} />
         </div>
         <EditInput
-          editingEditInputRef={editingEditInputRef}
+          editInputRef={editInputRef}
+          liRef={liRef}
           todo={todo}
-          handleEditTodoOnChange={handleEditTodoOnChange}
-          handleBlur={handleBlur}
-          handleEditTodoKeyPress={handleEditTodoKeyPress}
-          display={display}
+          handleEditTodoOnChangeFinished={handleEditTodoOnChangeFinished}
+          display={displayEditInput}
         />
       </li>
     )

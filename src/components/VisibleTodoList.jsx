@@ -17,6 +17,7 @@ class VisibleTodoList extends Component {
       handleRemove,
       handleBlur,
       handleEditTodoKeyPress,
+      handleEditTodoOnChangeFinished,
     } = this.props
 
     const filter = findKey(filters, f => f)
@@ -28,12 +29,15 @@ class VisibleTodoList extends Component {
           if (filter === 'completed' && !todo.completed) return false
 
           let completedLiClassName = todo.completed ? 'completed' : ''
+
           let liRef = null
+          let editInputRef = null
 
           const displayEditInput = editing && editingId === todo.id
 
           if (displayEditInput) {
             liRef = editingEditLiRef
+            editInputRef = editingEditInputRef
             completedLiClassName += ' editing'
           }
 
@@ -43,6 +47,7 @@ class VisibleTodoList extends Component {
               todo={todo}
               className={completedLiClassName}
               liRef={liRef}
+              editInputRef={editInputRef}
               checked={todo.completed}
               handleToggleTodo={handleToggleTodo}
               handleEditTodoOnChange={handleEditTodoOnChange}
@@ -53,6 +58,7 @@ class VisibleTodoList extends Component {
               handleBlur={handleBlur}
               handleEditTodoKeyPress={handleEditTodoKeyPress}
               displayEditInput={displayEditInput}
+              handleEditTodoOnChangeFinished={handleEditTodoOnChangeFinished}
             />
           )
         })}

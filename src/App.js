@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { get } from 'lodash'
 
 import './index.css'
 
@@ -18,7 +17,6 @@ class App extends Component {
     super(props)
     this.state = {
       todos: [],
-      newTodoText: '',
       editing: false,
       editingId: null,
       filters: {
@@ -29,15 +27,16 @@ class App extends Component {
     }
 
     this.editingEditLiRef = React.createRef()
+    this.editingEditInputRef = React.createRef()
   }
 
   activeTodosCount = () => {
-    return this.state.todos.filter(t => !t.completed).length
+    const { todos } = this.state
+    return todos.filter(t => !t.completed).length
   }
 
-  addTodo = () => {
-    const text = this.state.newTodoText
-    const todos = this.state.todos
+  addTodo = text => {
+    const { todos } = this.state
 
     const updatedTodos = [
       ...todos,
@@ -52,26 +51,19 @@ class App extends Component {
   }
 
   handleRemove = todoId => {
-    const todos = this.state.todos
+    const { todos } = this.state
     const updatedTodos = todos.filter(t => t.id !== todoId)
+
     this.updateTodos(updatedTodos)
   }
 
   handleToggleTodo = todoId => {
-    const todos = this.state.todos
-    let updatedTodos = []
+    const { todos } = this.state
 
-    todos.forEach(todo => {
-      if (todo.id !== todoId) {
-        updatedTodos.push(todo)
-        return
-      }
-
-      updatedTodos.push({
-        ...todo,
-        completed: !todo.completed,
-      })
-    })
+    const updatedTodos = todos.map(
+      todo =>
+        todo.id !== todoId ? todo : { ...todo, completed: !todo.completed }
+    )
 
     this.updateTodos(updatedTodos)
   }
@@ -81,20 +73,10 @@ class App extends Component {
       editing: true,
       editingId: todoId,
     })
-  }
 
-  handleNewTodoChange = e => {
-    const newTodoText = get(e, ['target', 'value'], '')
-    this.setState({
-      newTodoText,
-    })
-  }
-
-  handleNewTodoKeyPress = e => {
-    if (e.key === 'Enter' && this.state.newTodoText) {
-      this.addTodo()
-      this.setState({ newTodoText: '' })
-    }
+    setTimeout(() => {
+      this.editingEditInputRef.current.focus()
+    }, 1)
   }
 
   handleFilters = activatedFilterName => {
@@ -109,8 +91,9 @@ class App extends Component {
   }
 
   handleToggleAllTodos = () => {
-    const todos = this.state.todos
+    const { todos } = this.state
     const activeTodosCount = this.activeTodosCount()
+
     let updatedTodos = []
     if (activeTodosCount !== 0) {
       updatedTodos = todos.map(todo => ({ ...todo, completed: true }))
@@ -122,24 +105,21 @@ class App extends Component {
   }
 
   handleClearCompleted = () => {
-    const todos = this.state.todos
+    const { todos } = this.state
     this.updateTodos(todos.filter(t => !t.completed))
   }
 
-  handleEditTodoOnChange = (todoId, e) => {
-    const newText = get(e, 'target.value', '')
-    let updatedTodos = []
-    this.state.todos.forEach(todo => {
-      if (todo.id !== todoId) {
-        updatedTodos.push(todo)
-      } else {
-        updatedTodos.push({
-          ...todo,
-          text: newText,
-        })
-      }
+  handleEditTodoOnChangeFinished = changedTodo => {
+    const { todos } = this.state
+
+    this.setState({
+      editing: false,
+      editingId: null,
     })
 
+    const updatedTodos = todos.map(
+      todo => (todo.id !== changedTodo.id ? todo : changedTodo)
+    )
     this.updateTodos(updatedTodos)
   }
 
@@ -148,16 +128,6 @@ class App extends Component {
       todos,
     })
     updateTodosInLocalStorage(todos)
-  }
-
-  handleBlur = completed => {
-    this.editingEditLiRef.current.className = completed ? 'completed' : ''
-  }
-
-  handleEditTodoKeyPress = e => {
-    if (e.key === 'Enter') {
-      this.editingEditInputRef.current.blur()
-    }
   }
 
   componentDidMount() {
@@ -170,17 +140,14 @@ class App extends Component {
   }
 
   render() {
-    const { newTodoText, todos, filters, editing, editingId } = this.state
+    const { todos, filters, editing, editingId } = this.state
     const activeTodosCount = this.activeTodosCount()
     const todosCount = todos.length
     const completedTodosCount = todosCount - activeTodosCount
+
     return (
       <section className="todoapp">
-        <Header
-          handleNewTodoChange={this.handleNewTodoChange}
-          handleNewTodoKeyPress={this.handleNewTodoKeyPress}
-          newTodoText={newTodoText}
-        />
+        <Header addTodo={this.addTodo} />
         <section className="main">
           {todos.length ? (
             <input
@@ -197,12 +164,11 @@ class App extends Component {
             editing={editing}
             editingId={editingId}
             editingEditLiRef={this.editingEditLiRef}
+            editingEditInputRef={this.editingEditInputRef}
             handleToggleTodo={this.handleToggleTodo}
-            handleEditTodoOnDoubleClick={this.handleEditTodoOnDoubleClick}
-            handleEditTodoOnChange={this.handleEditTodoOnChange}
             handleRemove={this.handleRemove}
-            handleBlur={this.handleBlur}
-            handleEditTodoKeyPress={this.handleEditTodoKeyPress}
+            handleEditTodoOnChangeFinished={this.handleEditTodoOnChangeFinished}
+            handleEditTodoOnDoubleClick={this.handleEditTodoOnDoubleClick}
           />
         </section>
         <Footer
