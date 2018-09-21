@@ -12,9 +12,7 @@ export default class Todo extends Component {
 
     this.state = {
       completed,
-      className: classNames({
-        completed,
-      }),
+      className: getLiClassName({ completed }),
     }
   }
 
@@ -26,9 +24,7 @@ export default class Todo extends Component {
 
     if (nextCompleted !== prevCompleted) {
       return {
-        className: classNames({
-          completed: nextCompleted,
-        }),
+        className: getLiClassName({ completed: nextCompleted }),
         completed: nextCompleted,
       }
     }
@@ -39,19 +35,14 @@ export default class Todo extends Component {
   handleDoubleClick = () => {
     const { completed } = this.state
     this.setState({
-      className: classNames({
-        editing: true,
-        completed,
-      }),
+      className: getLiClassName({ completed, editing: true }),
     })
   }
 
   resetLiClassName = () => {
     const { completed } = this.state
     this.setState({
-      className: classNames({
-        completed,
-      }),
+      className: getLiClassName({ completed }),
     })
   }
 
@@ -79,4 +70,11 @@ export default class Todo extends Component {
       </li>
     )
   }
+}
+
+const getLiClassName = ({ completed, editing = false }) => {
+  return classNames({
+    completed,
+    editing,
+  })
 }
