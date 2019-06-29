@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import { store, persistor } from './store'
+import { store, persistor } from './store/store'
 import Main from './Main'
 
 class App extends Component {

@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
 import Filters from './Filters'
+import ClearCompletedButton from './ClearCompleted'
+
+import { toggleFilter, clearCompleted } from '../store/actions'
 
 class Footer extends Component {
   render() {
-    const {
-      display,
-      activeTodosCount,
-      completedTodosCount,
-      filters,
-      handleFilters,
-      handleClearCompleted,
-    } = this.props
+    const { todos, activeTodosCount, completedTodosCount } = this.props
+
+    const display = !!todos.length
 
     if (!display) return null
 
@@ -20,28 +22,21 @@ class Footer extends Component {
           <strong>{activeTodosCount}</strong>
           <span>{activeTodosCount === 1 ? ' item' : ' items'} left</span>
         </span>
-        <Filters filters={filters} handleFilters={handleFilters} />
-        <ClearCompletedButton
-          display={completedTodosCount}
-          handleClearCompleted={handleClearCompleted}
-        />
+        <Filters />
+        <ClearCompletedButton display={completedTodosCount} />
       </footer>
     )
   }
 }
 
-class ClearCompletedButton extends Component {
-  render() {
-    const { display, handleClearCompleted } = this.props
-
-    if (!display) return null
-
-    return (
-      <button className="clear-completed" onClick={handleClearCompleted}>
-        Clear completed
-      </button>
+export default connect(
+  ({ todos, filters }) => ({ todos, filters }),
+  dispatch =>
+    bindActionCreators(
+      {
+        toggleFilter,
+        clearCompleted,
+      },
+      dispatch
     )
-  }
-}
-
-export default Footer
+)(Footer)

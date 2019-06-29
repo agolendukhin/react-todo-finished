@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+import { toggleFilter } from '../store/actions'
+
 class Filters extends Component {
+  componentDidMount() {
+    const filter = window.location.hash.slice(2)
+
+    if (filter) this.props.toggleFilter(filter)
+  }
+
   render() {
-    const { filters, handleFilters } = this.props
+    const { filters, toggleFilter } = this.props
 
     return (
       <ul className="filters">
@@ -12,7 +23,7 @@ class Filters extends Component {
               <a
                 href={'#/' + (filter === 'all' ? '' : filter)}
                 className={activated ? 'selected' : ''}
-                onClick={() => handleFilters(filter)}>
+                onClick={() => toggleFilter(filter)}>
                 {filter.charAt(0).toUpperCase() + filter.slice(1)}
               </a>
             </li>
@@ -23,4 +34,13 @@ class Filters extends Component {
   }
 }
 
-export default Filters
+export default connect(
+  ({ filters }) => ({ filters }),
+  dispatch =>
+    bindActionCreators(
+      {
+        toggleFilter,
+      },
+      dispatch
+    )
+)(Filters)

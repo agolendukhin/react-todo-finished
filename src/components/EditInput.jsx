@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
 import get from 'lodash/get'
+
+import { updateTodo } from '../store/actions'
 
 class EditInput extends Component {
   constructor(props) {
@@ -17,9 +23,9 @@ class EditInput extends Component {
 
   onBlur = () => {
     const { value: text } = this.state
-    const { todo, handleEditTodoFinished, resetLiClassName } = this.props
+    const { todo, updateTodo, resetLiClassName } = this.props
 
-    handleEditTodoFinished({
+    updateTodo({
       ...todo,
       text,
     })
@@ -47,4 +53,13 @@ class EditInput extends Component {
   }
 }
 
-export default EditInput
+export default connect(
+  ({ todos }) => ({ todos }),
+  dispatch =>
+    bindActionCreators(
+      {
+        updateTodo,
+      },
+      dispatch
+    )
+)(EditInput)

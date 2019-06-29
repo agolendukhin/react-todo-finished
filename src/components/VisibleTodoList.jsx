@@ -1,20 +1,14 @@
-import findKey from 'lodash/findKey'
 import React, { Component } from 'react'
+
+import { connect } from 'react-redux'
+
+import { findKey } from 'lodash'
+
 import Todo from './Todo'
 
 class VisibleTodoList extends Component {
   render() {
-    const {
-      todos,
-      filters,
-      handleToggleTodo,
-      handleEditTodoOnChange,
-      handleEditTodoOnDoubleClick,
-      handleRemove,
-      handleBlur,
-      handleEditTodoKeyPress,
-      handleEditTodoFinished,
-    } = this.props
+    const { todos, filters } = this.props
 
     const filter = findKey(filters, f => f)
 
@@ -29,14 +23,7 @@ class VisibleTodoList extends Component {
               key={i}
               todo={todo}
               checked={todo.completed}
-              handleToggleTodo={handleToggleTodo}
-              handleEditTodoOnChange={handleEditTodoOnChange}
-              handleEditTodoOnDoubleClick={handleEditTodoOnDoubleClick}
               labelText={todo.text}
-              handleRemove={handleRemove}
-              handleBlur={handleBlur}
-              handleEditTodoKeyPress={handleEditTodoKeyPress}
-              handleEditTodoFinished={handleEditTodoFinished}
             />
           )
         })}
@@ -45,4 +32,7 @@ class VisibleTodoList extends Component {
   }
 }
 
-export default VisibleTodoList
+export default connect(
+  ({ todos, filters }) => ({ todos, filters }),
+  null
+)(VisibleTodoList)
