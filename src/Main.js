@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import '../node_modules/todomvc-common/base.css'
 import '../node_modules/todomvc-app-css/index.css'
 
-import { getNewId } from './utils/utils'
+import { getNewId } from './utils'
 
 import Header from './components/Header'
 import VisibleTodoList from './components/VisibleTodoList'
