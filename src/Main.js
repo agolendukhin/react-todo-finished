@@ -6,32 +6,13 @@ import { bindActionCreators } from 'redux'
 import '../node_modules/todomvc-common/base.css'
 import '../node_modules/todomvc-app-css/index.css'
 
-import { getNewId } from './utils'
-
 import Header from './components/Header'
 import VisibleTodoList from './components/VisibleTodoList'
 import Footer from './components/Footer'
 
-import {
-  addTodo,
-  removeTodo,
-  updateTodo,
-  toggleAllTodos,
-  clearCompleted,
-  toggleFilter,
-} from './store/actions'
+import { toggleAllTodos } from './store/actions'
 
 class Main extends Component {
-  addTodo = text => {
-    const { todos } = this.props
-
-    this.props.addTodo({
-      id: getNewId(todos),
-      text,
-      completed: false,
-    })
-  }
-
   activeTodosCount = () => {
     const { todos } = this.props
     return todos.filter(t => !t.completed).length
@@ -55,7 +36,7 @@ class Main extends Component {
 
     return (
       <section className="todoapp">
-        <Header addTodo={this.addTodo} />
+        <Header />
         <section className="main">
           {todos.length ? (
             <React.Fragment>
@@ -84,12 +65,7 @@ export default connect(
   dispatch =>
     bindActionCreators(
       {
-        addTodo,
-        removeTodo,
-        updateTodo,
         toggleAllTodos,
-        clearCompleted,
-        toggleFilter,
       },
       dispatch
     )

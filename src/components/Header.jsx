@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+import { getNewId } from '../utils'
+
+import { addTodo } from '../store/actions'
+
 import { get } from 'lodash'
 
 class Header extends Component {
@@ -19,10 +26,15 @@ class Header extends Component {
 
   handleKeyPress = e => {
     const { value } = this.state
-    const { addTodo } = this.props
+    const { todos, addTodo } = this.props
 
     if (e.key === 'Enter' && value) {
-      addTodo(value)
+      addTodo({
+        id: getNewId(todos),
+        text: value,
+        completed: false,
+      })
+
       this.setState({ value: '' })
     }
   }
@@ -44,4 +56,13 @@ class Header extends Component {
   }
 }
 
-export default Header
+export default connect(
+  ({ todos }) => ({ todos }),
+  dispatch =>
+    bindActionCreators(
+      {
+        addTodo,
+      },
+      dispatch
+    )
+)(Header)
