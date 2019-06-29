@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import get from 'lodash/get'
+
+import { get } from 'lodash'
 
 class Header extends Component {
   constructor(props) {
