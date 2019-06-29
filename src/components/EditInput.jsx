@@ -8,26 +8,21 @@ import { get } from 'lodash'
 import { updateTodo } from '../store/actions'
 
 const EditInput = props => {
+  const { todo, updateTodo, resetLiClassName } = props
+
   const [value, setValue] = useState(get(props, 'todo.text', ''))
 
   const onChange = e => setValue(get(e, 'target.value', ''))
 
-  const onBlur = () => {
-    const { todo, updateTodo, resetLiClassName } = props
+  const onKeyPress = e => e.key === 'Enter' && resetLiClassName()
 
+  const onBlur = () => {
     updateTodo({
       ...todo,
       text: value,
     })
 
     resetLiClassName()
-  }
-
-  const onKeyPress = e => {
-    if (e.key === 'Enter') {
-      const { resetLiClassName } = props
-      resetLiClassName()
-    }
   }
 
   return (

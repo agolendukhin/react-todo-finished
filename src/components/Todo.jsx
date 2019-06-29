@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { get } from 'lodash'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -10,65 +12,38 @@ import EditInput from './EditInput'
 
 import { removeTodo } from '../store/actions'
 
-class Todo extends Component {
-  constructor(props) {
-    super(props)
-    const {
-      todo: { completed },
-    } = props
+const Todo = props => {
+  const initialCompleted = get(props, 'todo.completed')
 
-    this.state = {
-      completed,
-      className: getLiClassName({ completed }),
-    }
-  }
+  const { todo, removeTodo } = props
 
-  static getDerivedStateFromProps(nextProps, state) {
-    const {
-      todo: { completed: nextCompleted },
-    } = nextProps
+  const [completed, setCompleted] = useState(initialCompleted)
+  const [className, setClassName] = useState(
+    getLiClassName({ completed: initialCompleted })
+  )
 
-    const prevCompleted = state.completed
+  useEffect(() => {
+    const nextCompleted = props.completed
 
-    if (nextCompleted !== prevCompleted) {
-      return {
-        className: getLiClassName({ completed: nextCompleted }),
-        completed: nextCompleted,
-      }
-    }
+    setCompleted(nextCompleted)
+    setClassName(getLiClassName({ completed: nextCompleted }))
+  }, [props.completed])
 
-    return null
-  }
+  const handleDoubleClick = () =>
+    setClassName(getLiClassName({ completed, editing: true }))
 
-  handleDoubleClick = () => {
-    const { completed } = this.state
-    this.setState({
-      className: getLiClassName({ completed, editing: true }),
-    })
-  }
+  const resetLiClassName = () => setClassName(getLiClassName({ completed }))
 
-  resetLiClassName = () => {
-    const { completed } = this.state
-    this.setState({
-      className: getLiClassName({ completed }),
-    })
-  }
-
-  render() {
-    const { className } = this.state
-    const { todo, removeTodo } = this.props
-
-    return (
-      <li className={className}>
-        <div className="view">
-          <ToggleTodo todo={todo} />
-          <label onDoubleClick={this.handleDoubleClick}>{todo.text}</label>
-          <button className="destroy" onClick={() => removeTodo(todo.id)} />
-        </div>
-        <EditInput todo={todo} resetLiClassName={this.resetLiClassName} />
-      </li>
-    )
-  }
+  return (
+    <li className={className}>
+      <div className="view">
+        <ToggleTodo todo={todo} />
+        <label onDoubleClick={handleDoubleClick}>{todo.text}</label>
+        <button className="destroy" onClick={() => removeTodo(todo.id)} />
+      </div>
+      <EditInput todo={todo} resetLiClassName={resetLiClassName} />
+    </li>
+  )
 }
 
 const getLiClassName = ({ completed, editing = false }) =>

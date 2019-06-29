@@ -1,22 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import { clearCompleted } from '../store/actions'
 
-class ClearCompletedButton extends Component {
-  render() {
-    const { display, clearCompleted } = this.props
+const ClearCompletedButton = props => {
+  const { display, clearCompleted } = props
 
-    if (!display) return null
+  if (!display) return null
 
-    return (
-      <button className="clear-completed" onClick={clearCompleted}>
-        Clear completed
-      </button>
-    )
-  }
+  return (
+    <button className="clear-completed" onClick={clearCompleted}>
+      Clear completed
+    </button>
+  )
 }
 
 export default connect(

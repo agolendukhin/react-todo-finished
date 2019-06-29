@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -9,25 +9,13 @@ import { addTodo } from '../store/actions'
 
 import { get } from 'lodash'
 
-class Header extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      value: '',
-    }
-  }
+const Header = props => {
+  const { todos, addTodo } = props
+  const [value, setValue] = useState('')
 
-  handleChange = e => {
-    const value = get(e, ['target', 'value'], '')
-    this.setState({
-      value,
-    })
-  }
+  const handleChange = e => setValue(get(e, ['target', 'value'], ''))
 
-  handleKeyPress = e => {
-    const { value } = this.state
-    const { todos, addTodo } = this.props
-
+  const handleKeyPress = e => {
     if (e.key === 'Enter' && value) {
       addTodo({
         id: getNewId(todos),
@@ -35,25 +23,22 @@ class Header extends Component {
         completed: false,
       })
 
-      this.setState({ value: '' })
+      setValue('')
     }
   }
 
-  render() {
-    const { value } = this.state
-    return (
-      <header>
-        <h1>todos</h1>
-        <input
-          className="new-todo"
-          placeholder="What needs to be done?"
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-          value={value}
-        />
-      </header>
-    )
-  }
+  return (
+    <header>
+      <h1>todos</h1>
+      <input
+        className="new-todo"
+        placeholder="What needs to be done?"
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        value={value}
+      />
+    </header>
+  )
 }
 
 export default connect(
