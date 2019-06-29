@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.4",
@@ -17,5 +17,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0"
   }
 }

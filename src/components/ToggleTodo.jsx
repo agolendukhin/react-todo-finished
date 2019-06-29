@@ -8,7 +8,7 @@ class ToggleTodo extends Component {
         className="toggle"
         type="checkbox"
         checked={todo.completed}
-        onChange={() => handleToggleTodo(todo.id)}
+        onChange={() => handleToggleTodo(todo)}
       />
     )
   }
