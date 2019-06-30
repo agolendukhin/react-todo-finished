@@ -7,14 +7,14 @@
     "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
-    "todomvc-app-css": "^2.2.0",
-    "todomvc-common": "^1.0.5",
     "react-redux": "^7.1.0",
+    "react-scripts": "3.0.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "todomvc-app-css": "^2.2.0",
+    "todomvc-common": "^1.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,5 +33,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.22",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-redux": "^7.1.1",
+    "@types/classnames": "^2.2.8",
+    "@types/lodash": "^4.14.135",
+    "@types/redux-logger": "^3.0.7",
+    "typescript": "^3.5.2"
   }
 }

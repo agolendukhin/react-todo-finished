@@ -1,12 +1,15 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
-
 import { findKey } from 'lodash'
-
 import Todo from './Todo'
+import { Todos, Filters, RootState } from '../Types'
 
-const VisibleTodoList = props => {
+interface ListProps {
+  todos: Todos
+  filters: Filters
+}
+
+const VisibleTodoList: React.FC<ListProps> = props => {
   const { todos, filters } = props
   const filter = findKey(filters, f => f)
 
@@ -16,20 +19,13 @@ const VisibleTodoList = props => {
         if (filter === 'active' && todo.completed) return false
         if (filter === 'completed' && !todo.completed) return false
 
-        return (
-          <Todo
-            key={i}
-            todo={todo}
-            completed={todo.completed}
-            labelText={todo.text}
-          />
-        )
+        return <Todo key={i} todo={todo} />
       })}
     </ul>
   )
 }
 
 export default connect(
-  ({ todos, filters }) => ({ todos, filters }),
+  ({ todos, filters }: RootState) => ({ todos, filters }),
   null
 )(VisibleTodoList)

@@ -1,11 +1,21 @@
 import React, { useEffect } from 'react'
-
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
 import { toggleFilter } from '../store/actions'
 
-const Filters = props => {
+import {
+  Filters,
+  TodoActionCreator,
+  RootState,
+  ConnectDispatch,
+} from '../Types'
+
+interface FilterProps {
+  filters: Filters
+  toggleFilter: TodoActionCreator
+}
+
+const FiltersComponent: React.FC<FilterProps> = props => {
   const { filters, toggleFilter } = props
 
   useEffect(() => {
@@ -33,12 +43,12 @@ const Filters = props => {
 }
 
 export default connect(
-  ({ filters }) => ({ filters }),
-  dispatch =>
+  ({ filters }: RootState) => ({ filters }),
+  (dispatch: ConnectDispatch) =>
     bindActionCreators(
       {
         toggleFilter,
       },
       dispatch
     )
-)(Filters)
+)(FiltersComponent)

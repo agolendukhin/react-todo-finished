@@ -1,11 +1,15 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
 import { updateTodo } from '../store/actions'
+import { Todo, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 
-const ToggleTodo = props => {
+interface ToggleProps {
+  todo: Todo
+  updateTodo: TodoActionCreator
+}
+
+const ToggleTodoComponent: React.FC<ToggleProps> = props => {
   const { todo, updateTodo } = props
 
   return (
@@ -19,12 +23,12 @@ const ToggleTodo = props => {
 }
 
 export default connect(
-  ({ todos }) => ({ todos }),
-  dispatch =>
+  ({ todos }: RootState) => ({ todos }),
+  (dispatch: ConnectDispatch) =>
     bindActionCreators(
       {
         updateTodo,
       },
       dispatch
     )
-)(ToggleTodo)
+)(ToggleTodoComponent)

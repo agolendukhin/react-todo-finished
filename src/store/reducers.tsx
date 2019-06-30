@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers, AnyAction } from 'redux'
 import { get } from 'lodash'
 
 import {
@@ -10,7 +10,9 @@ import {
   TOGGLE_FILTER,
 } from './actions'
 
-const todosReducer = (todos = [], action) => {
+import { Todo, Filters } from '../Types'
+
+const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {
   switch (action.type) {
     case ADD_TODO:
       return [...todos, action.todo]
@@ -35,12 +37,12 @@ const todosReducer = (todos = [], action) => {
 }
 
 const filtersReducer = (
-  filters = {
+  filters: Filters = {
     all: true,
     active: false,
     completed: false,
   },
-  action
+  action: AnyAction
 ) => {
   switch (action.type) {
     case TOGGLE_FILTER:

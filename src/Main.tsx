@@ -11,8 +11,15 @@ import VisibleTodoList from './components/VisibleTodoList'
 import Footer from './components/Footer'
 
 import { toggleAllTodos } from './store/actions'
+import { Todos, TodoActionCreator, RootState, ConnectDispatch } from './Types'
 
-const Main = props => {
+interface MainProps {
+  todos: Todos
+  activeTodosCount: number
+  toggleAllTodos: TodoActionCreator
+}
+
+const Main: React.FC<MainProps> = props => {
   const { todos, activeTodosCount, toggleAllTodos } = props
 
   const handleToggleAllTodos = () => {
@@ -49,12 +56,12 @@ const Main = props => {
 }
 
 export default connect(
-  ({ todos, filters }) => {
+  ({ todos, filters }: RootState) => {
     const activeTodosCount = todos.filter(t => !t.completed).length
 
     return { activeTodosCount, todos, filters }
   },
-  dispatch =>
+  (dispatch: ConnectDispatch) =>
     bindActionCreators(
       {
         toggleAllTodos,
