@@ -11,13 +11,13 @@ import { get } from 'lodash'
 import { updateTodo } from '../store/actions'
 import { Todo, RootState, TodoActionCreator, ConnectDispatch } from '../Types'
 
-interface InputProps {
+interface Props {
   todo: Todo
   updateTodo: TodoActionCreator
   resetLiClassName: () => void
 }
 
-const EditInputComponent: React.FC<InputProps> = props => {
+const EditInputComponent: React.FC<Props> = props => {
   const { todo, updateTodo, resetLiClassName } = props
   const [value, setValue] = useState(get(props, 'todo.text', ''))
 

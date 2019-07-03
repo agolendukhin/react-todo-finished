@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
@@ -13,9 +13,11 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducers)
 
-export const store = createStore(
-  persistedReducer,
-  applyMiddleware(thunk, logger)
-)
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+const enhancer = composeEnhancers(applyMiddleware(thunk, logger))
+
+export const store = createStore(persistedReducer, enhancer)
 
 export const persistor = persistStore(store)

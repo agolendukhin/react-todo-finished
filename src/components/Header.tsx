@@ -10,12 +10,12 @@ import { addTodo } from '../store/actions'
 import { get } from 'lodash'
 import { Todos, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 
-interface HeaderProps {
+interface Props {
   todos: Todos
   addTodo: TodoActionCreator
 }
 
-const HeaderComponent: React.FC<HeaderProps> = props => {
+const HeaderComponent: React.FC<Props> = props => {
   const { todos, addTodo } = props
   const [value, setValue] = useState('')
 

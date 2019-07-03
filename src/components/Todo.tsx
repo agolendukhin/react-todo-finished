@@ -8,12 +8,12 @@ import EditInput from './EditInput'
 import { removeTodo } from '../store/actions'
 import { Todo, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 
-interface TodoProps {
+interface Props {
   todo: Todo
   removeTodo: TodoActionCreator
 }
 
-const TodoComponent: React.FC<TodoProps> = props => {
+const TodoComponent: React.FC<Props> = props => {
   const initialCompleted = get(props, 'todo.completed')
 
   const { todo, removeTodo } = props

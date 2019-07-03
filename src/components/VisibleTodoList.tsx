@@ -4,12 +4,12 @@ import { findKey } from 'lodash'
 import Todo from './Todo'
 import { Todos, Filters, RootState } from '../Types'
 
-interface ListProps {
+interface Props {
   todos: Todos
   filters: Filters
 }
 
-const VisibleTodoList: React.FC<ListProps> = props => {
+const VisibleTodoList: React.FC<Props> = props => {
   const { todos, filters } = props
   const filter = findKey(filters, f => f)
 

@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux'
 import { updateTodo } from '../store/actions'
 import { Todo, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 
-interface ToggleProps {
+interface Props {
   todo: Todo
   updateTodo: TodoActionCreator
 }
 
-const ToggleTodoComponent: React.FC<ToggleProps> = props => {
+const ToggleTodoComponent: React.FC<Props> = props => {
   const { todo, updateTodo } = props
 
   return (

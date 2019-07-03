@@ -10,12 +10,12 @@ import {
   ConnectDispatch,
 } from '../Types'
 
-interface FilterProps {
+interface Props {
   filters: Filters
   toggleFilter: TodoActionCreator
 }
 
-const FiltersComponent: React.FC<FilterProps> = props => {
+const FiltersComponent: React.FC<Props> = props => {
   const { filters, toggleFilter } = props
 
   useEffect(() => {

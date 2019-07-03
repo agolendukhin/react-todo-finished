@@ -6,13 +6,13 @@ import ClearCompletedButton from './ClearCompleted'
 import { toggleFilter, clearCompleted } from '../store/actions'
 import { Todos, RootState, ConnectDispatch } from '../Types'
 
-interface FooterProps {
+interface Props {
   todos: Todos
   activeTodosCount: number
   completedTodosCount: number
 }
 
-const FooterComponent: React.FC<FooterProps> = props => {
+const FooterComponent: React.FC<Props> = props => {
   const { todos, activeTodosCount, completedTodosCount } = props
 
   const display = !!todos.length

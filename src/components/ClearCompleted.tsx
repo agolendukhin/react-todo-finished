@@ -5,12 +5,12 @@ import { clearCompleted } from '../store/actions'
 
 import { RootState, TodoActionCreator, ConnectDispatch } from '../Types'
 
-interface BtnProps {
+interface Props {
   display: boolean
   clearCompleted: TodoActionCreator
 }
 
-const ClearCompletedComponent: React.FC<BtnProps> = ({
+const ClearCompletedComponent: React.FC<Props> = ({
   display,
   clearCompleted,
 }) =>
