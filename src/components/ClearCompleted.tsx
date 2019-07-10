@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { clearCompleted } from '../store/actions'
-
 import { RootState, TodoActionCreator, ConnectDispatch } from '../Types'
 
 interface Props {

@@ -2,16 +2,11 @@ import React, { ComponentType } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-
 import { store, persistor } from './store/store'
-
 import Firebase, { FirebaseContext } from './components/firebase'
-
 import { AuthUserContext } from './components/session'
-
 import Main from './Main'
 import { SignIn, PrivateRoute } from './components'
-
 import { IFirebaseContext } from './components/firebase/context'
 import { IAuthUserContext } from './components/session/context'
 

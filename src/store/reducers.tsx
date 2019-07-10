@@ -1,6 +1,5 @@
 import { combineReducers, AnyAction } from 'redux'
 import { get } from 'lodash'
-
 import {
   ADD_TODO,
   REMOVE_TODO,
@@ -9,7 +8,6 @@ import {
   CLEAR_COMPLETED,
   TOGGLE_FILTER,
 } from './actions'
-
 import { Todo, Filters } from '../Types'
 
 const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {

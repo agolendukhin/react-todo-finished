@@ -1,6 +1,5 @@
 import React, { ComponentType } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-
 import Loading from './Loading'
 
 interface IPrivateRoute {

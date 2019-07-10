@@ -1,13 +1,9 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
 import { bindActionCreators, compose } from 'redux'
-
 import '../node_modules/todomvc-common/base.css'
 import '../node_modules/todomvc-app-css/index.css'
-
 import { Header, VisibleTodoList, Footer, SignOut } from './components'
-
 import { toggleAllTodos } from './store/actions'
 import { Todos, TodoActionCreator, RootState, ConnectDispatch } from './Types'
 import { withFirebase } from './components/firebase'

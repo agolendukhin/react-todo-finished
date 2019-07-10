@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { toggleFilter } from '../store/actions'
-
 import {
   Filters,
   TodoActionCreator,

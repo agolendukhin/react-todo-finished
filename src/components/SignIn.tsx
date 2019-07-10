@@ -1,11 +1,9 @@
 import React from 'react'
 import firebase from 'firebase'
 import { withFirebase } from './firebase'
-
 import styled from 'styled-components'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
-
 import { History } from 'history'
 
 const SignIn = styled.button`
