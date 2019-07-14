@@ -1,5 +1,6 @@
 import app from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/firestore'
 import { Component } from 'react'
 
 const config = {
@@ -24,12 +25,14 @@ interface IState {
 class Firebase extends Component<IProps, IState> {
   public auth: app.auth.Auth
   public googleAuthProvider: app.auth.GoogleAuthProvider
+  public db: app.firestore.Firestore
 
   constructor(props: IProps) {
     super(props)
     app.initializeApp(config)
 
     this.auth = app.auth()
+    this.db = app.firestore()
     this.googleAuthProvider = new app.auth.GoogleAuthProvider()
 
     this.state = {
@@ -57,6 +60,7 @@ class Firebase extends Component<IProps, IState> {
     return this.props.children({
       user,
       loading,
+      db: this.db,
       signInWithPopUp: this.signInWithPopUp,
       signOut: this.signOut,
       googleAuthProvider: this.googleAuthProvider,

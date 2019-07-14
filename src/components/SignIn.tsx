@@ -54,4 +54,4 @@ const SignInScreen: React.FC<Props> = props => {
 export default compose(
   withFirebase,
   withRouter
-)(SignInScreen as any)
+)(SignInScreen) as React.ComponentType

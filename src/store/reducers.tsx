@@ -1,34 +1,53 @@
 import { combineReducers, AnyAction } from 'redux'
 import { get } from 'lodash'
 import {
-  ADD_TODO,
-  REMOVE_TODO,
-  UPDATE_TODO,
-  TOGGLE_ALL_TODOS,
-  CLEAR_COMPLETED,
+  FETCH_TODOS,
+  ADD_TODO_SERVER,
+  ADD_TODO_LOCAL,
+  REMOVE_TODO_LOCAL,
+  REMOVE_TODO_SERVER,
+  UPDATE_TODO_LOCAL,
+  UPDATE_TODO_SERVER,
+  TOGGLE_ALL_TODOS_LOCAL,
+  TOGGLE_ALL_TODOS_SERVER,
+  CLEAR_COMPLETED_LOCAL,
+  CLEAR_COMPLETED_SERVER,
   TOGGLE_FILTER,
+  SET_IS_FETCHING,
 } from './actions'
 import { Todo, Filters } from '../Types'
 
 const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {
   switch (action.type) {
-    case ADD_TODO:
+    case FETCH_TODOS:
+      return action.todos
+
+    case ADD_TODO_LOCAL:
       return [...todos, action.todo]
 
-    case REMOVE_TODO:
+    case ADD_TODO_SERVER:
+      return todos.map(todo =>
+        todo.id === action.todo.id ? action.todo : todo
+      )
+
+    case REMOVE_TODO_LOCAL:
       return todos.filter(todo => todo.id !== action.id)
 
-    case UPDATE_TODO:
+    case UPDATE_TODO_LOCAL:
       return todos.map(todo =>
         todo.id === get(action, 'todo.id') ? action.todo : todo
       )
 
-    case TOGGLE_ALL_TODOS:
+    case TOGGLE_ALL_TODOS_LOCAL:
       return todos.map(todo => ({ ...todo, completed: action.completed }))
 
-    case CLEAR_COMPLETED:
+    case CLEAR_COMPLETED_LOCAL:
       return todos.filter(t => !t.completed)
 
+    case TOGGLE_ALL_TODOS_SERVER:
+    case CLEAR_COMPLETED_SERVER:
+    case REMOVE_TODO_SERVER:
+    case UPDATE_TODO_SERVER:
     default:
       return todos
   }
@@ -56,4 +75,18 @@ const filtersReducer = (
   }
 }
 
-export default combineReducers({ todos: todosReducer, filters: filtersReducer })
+const scopeReducer = (scope = { isFetching: false }, action: AnyAction) => {
+  switch (action.type) {
+    case SET_IS_FETCHING:
+      return { ...scope, isFetching: action.isFetching }
+
+    default:
+      return scope
+  }
+}
+
+export default combineReducers({
+  todos: todosReducer,
+  filters: filtersReducer,
+  scope: scopeReducer,
+})

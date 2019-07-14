@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, compose } from 'redux'
 import classNames from 'classnames'
 import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
 import { removeTodo } from '../store/actions'
-import { Todo, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
+import {
+  Todo,
+  TodoActionCreator,
+  RootState,
+  ConnectDispatch,
+  TDB,
+} from '../Types'
+import { withFirebase } from './firebase'
 
 interface Props {
   todo: Todo
   removeTodo: TodoActionCreator
+  firebase: {
+    db: TDB
+  }
 }
 
 const TodoComponent: React.FC<Props> = props => {
   const initialCompleted = get(props, 'todo.completed')
 
-  const { todo, removeTodo } = props
+  const {
+    todo,
+    removeTodo,
+    firebase: { db },
+  } = props
 
   const [completed, setCompleted] = useState(initialCompleted)
   const [className, setClassName] = useState(
@@ -40,7 +54,7 @@ const TodoComponent: React.FC<Props> = props => {
       <div className="view">
         <ToggleTodo todo={todo} />
         <label onDoubleClick={handleDoubleClick}>{todo.text}</label>
-        <button className="destroy" onClick={() => removeTodo(todo.id)} />
+        <button className="destroy" onClick={() => removeTodo(db, todo)} />
       </div>
       <EditInput todo={todo} resetLiClassName={resetLiClassName} />
     </li>
@@ -58,13 +72,16 @@ const getLiClassName = ({ completed, editing = false }: ClassNamesProps) =>
     editing,
   })
 
-export default connect(
-  ({ todos }: RootState) => ({ todos }),
-  (dispatch: ConnectDispatch) =>
-    bindActionCreators(
-      {
-        removeTodo,
-      },
-      dispatch
-    )
-)(TodoComponent)
+export default compose(
+  withFirebase,
+  connect(
+    ({ todos }: RootState) => ({ todos }),
+    (dispatch: ConnectDispatch) =>
+      bindActionCreators(
+        {
+          removeTodo,
+        },
+        dispatch
+      )
+  )
+)(TodoComponent) as any

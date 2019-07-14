@@ -4,20 +4,38 @@ import React, {
   KeyboardEventHandler,
   ChangeEventHandler,
 } from 'react'
+
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, compose } from 'redux'
 import { get } from 'lodash'
 import { updateTodo } from '../store/actions'
-import { Todo, RootState, TodoActionCreator, ConnectDispatch } from '../Types'
+
+import {
+  Todo,
+  RootState,
+  TodoActionCreator,
+  TDB,
+  ConnectDispatch,
+} from '../Types'
+
+import { withFirebase } from './firebase'
 
 interface Props {
   todo: Todo
   updateTodo: TodoActionCreator
   resetLiClassName: () => void
+  firebase: {
+    db: TDB
+  }
 }
 
 const EditInputComponent: React.FC<Props> = props => {
-  const { todo, updateTodo, resetLiClassName } = props
+  const {
+    todo,
+    updateTodo,
+    resetLiClassName,
+    firebase: { db },
+  } = props
   const [value, setValue] = useState(get(props, 'todo.text', ''))
 
   const onChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -27,7 +45,7 @@ const EditInputComponent: React.FC<Props> = props => {
     e.key === 'Enter' && resetLiClassName()
 
   const onBlur: FocusEventHandler<HTMLInputElement> = () => {
-    updateTodo({
+    updateTodo(db, {
       ...todo,
       text: value,
     })
@@ -47,13 +65,16 @@ const EditInputComponent: React.FC<Props> = props => {
   )
 }
 
-export default connect(
-  ({ todos }: RootState) => ({ todos }),
-  (dispatch: ConnectDispatch) =>
-    bindActionCreators(
-      {
-        updateTodo,
-      },
-      dispatch
-    )
-)(EditInputComponent)
+export default compose(
+  withFirebase,
+  connect(
+    ({ todos }: RootState) => ({ todos }),
+    (dispatch: ConnectDispatch) =>
+      bindActionCreators(
+        {
+          updateTodo,
+        },
+        dispatch
+      )
+  )
+)(EditInputComponent) as any
