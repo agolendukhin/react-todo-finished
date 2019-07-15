@@ -5,13 +5,7 @@ import '../node_modules/todomvc-common/base.css'
 import '../node_modules/todomvc-app-css/index.css'
 import { Header, VisibleTodoList, Footer, SignOut } from './components'
 import { toggleAllTodos, getTodos } from './store/actions'
-import {
-  Todos,
-  TodoActionCreator,
-  RootState,
-  ConnectDispatch,
-  TDB,
-} from './Types'
+import { Todos, TodoActionCreator, RootState, ConnectDispatch } from './Types'
 import { withFirebase } from './components/firebase'
 
 import Loading from './components/Loading'
@@ -23,7 +17,6 @@ interface MainProps {
   getTodos: TodoActionCreator
   firebase: {
     signOut: () => void
-    db: TDB
   }
   isFetching: boolean
 }
@@ -39,12 +32,12 @@ const Main: React.FC<MainProps> = props => {
   } = props
 
   useEffect(() => {
-    getTodos(firebase.db)
-  }, [getTodos, firebase])
+    getTodos()
+  }, [getTodos])
 
   const handleToggleAllTodos = () => {
     const completed = activeTodosCount ? true : false
-    toggleAllTodos(firebase.db, completed)
+    toggleAllTodos(completed)
   }
 
   const todosCount = todos.length

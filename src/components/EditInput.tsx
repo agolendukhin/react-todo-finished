@@ -24,18 +24,10 @@ interface Props {
   todo: Todo
   updateTodo: TodoActionCreator
   resetLiClassName: () => void
-  firebase: {
-    db: TDB
-  }
 }
 
 const EditInputComponent: React.FC<Props> = props => {
-  const {
-    todo,
-    updateTodo,
-    resetLiClassName,
-    firebase: { db },
-  } = props
+  const { todo, updateTodo, resetLiClassName } = props
   const [value, setValue] = useState(get(props, 'todo.text', ''))
 
   const onChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -45,7 +37,7 @@ const EditInputComponent: React.FC<Props> = props => {
     e.key === 'Enter' && resetLiClassName()
 
   const onBlur: FocusEventHandler<HTMLInputElement> = () => {
-    updateTodo(db, {
+    updateTodo({
       ...todo,
       text: value,
     })

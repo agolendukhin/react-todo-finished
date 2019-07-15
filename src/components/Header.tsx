@@ -8,30 +8,16 @@ import { bindActionCreators, compose } from 'redux'
 import { getNewId } from '../utils'
 import { addTodo } from '../store/actions'
 import { get } from 'lodash'
-import {
-  Todos,
-  TodoActionCreator,
-  RootState,
-  ConnectDispatch,
-  TDB,
-} from '../Types'
+import { Todos, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 import { withFirebase } from './firebase'
-import firebase from 'firebase'
 
 interface Props {
   todos: Todos
   addTodo: TodoActionCreator
-  firebase: {
-    db: TDB
-  }
 }
 
 const HeaderComponent: React.FC<Props> = props => {
-  const {
-    todos,
-    addTodo,
-    firebase: { db },
-  } = props
+  const { todos, addTodo } = props
   const [value, setValue] = useState('')
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -39,7 +25,7 @@ const HeaderComponent: React.FC<Props> = props => {
 
   const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = e => {
     if (e.key === 'Enter' && value) {
-      addTodo(db, {
+      addTodo({
         id: getNewId(todos),
         text: value,
         completed: false,
@@ -61,12 +47,6 @@ const HeaderComponent: React.FC<Props> = props => {
       />
     </header>
   )
-}
-
-interface IOwnProps {
-  firebase: {
-    database: firebase.database.Database
-  }
 }
 
 export default compose(

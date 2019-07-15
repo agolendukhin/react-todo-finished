@@ -8,18 +8,14 @@ import { withFirebase } from './firebase'
 interface Props {
   display: boolean
   clearCompleted: TodoActionCreator
-  firebase: {
-    db: TDB
-  }
 }
 
 const ClearCompletedComponent: React.FC<Props> = ({
   display,
   clearCompleted,
-  firebase: { db },
 }) =>
   display ? (
-    <button className="clear-completed" onClick={() => clearCompleted(db)}>
+    <button className="clear-completed" onClick={() => clearCompleted()}>
       Clear completed
     </button>
   ) : null

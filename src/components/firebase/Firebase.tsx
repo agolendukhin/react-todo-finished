@@ -13,6 +13,11 @@ const config = {
   appId: process.env.REACT_APP_APP_ID,
 }
 
+app.initializeApp(config)
+
+const auth = app.auth()
+export const db = app.firestore()
+
 interface IProps {
   children: any
 }
@@ -29,10 +34,9 @@ class Firebase extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props)
-    app.initializeApp(config)
 
-    this.auth = app.auth()
-    this.db = app.firestore()
+    this.auth = auth
+    this.db = db
     this.googleAuthProvider = new app.auth.GoogleAuthProvider()
 
     this.state = {

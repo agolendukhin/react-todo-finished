@@ -1,7 +1,8 @@
 import { TDB, Todo, Todos } from '../../Types'
+import { db } from './Firebase'
 
 export default {
-  fetchTodos: (db: TDB) =>
+  fetchTodos: () =>
     db
       .collection('todos')
       .get()
@@ -9,21 +10,21 @@ export default {
         querySnapshot.docs.map(doc => ({ ...doc.data(), serverId: doc.id }))
       ),
 
-  addTodo: (db: TDB, todo: Todo) => db.collection('todos').add(todo),
+  addTodo: (todo: Todo) => db.collection('todos').add(todo),
 
-  removeTodo: (db: TDB, serverId: string) =>
+  removeTodo: (serverId: string) =>
     db
       .collection('todos')
       .doc(serverId)
       .delete(),
 
-  updateTodo: (db: TDB, todo: Todo) =>
+  updateTodo: (todo: Todo) =>
     db
       .collection('todos')
       .doc(todo.serverId)
       .update(todo),
 
-  toggleAllTodos: (db: TDB, todos: Todos, completed: boolean) => {
+  toggleAllTodos: (todos: Todos, completed: boolean) => {
     const batch = db.batch()
 
     todos.forEach(todo => {
@@ -34,7 +35,7 @@ export default {
     return batch.commit()
   },
 
-  clearCompleted: (db: TDB, todos: Todos) => {
+  clearCompleted: (todos: Todos) => {
     const batch = db.batch()
 
     todos.forEach(todo => {
