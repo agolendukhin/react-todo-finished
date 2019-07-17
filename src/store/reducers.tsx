@@ -1,7 +1,7 @@
 import { combineReducers, AnyAction } from 'redux'
 import { get } from 'lodash'
 import {
-  FETCH_TODOS,
+  FETCH_TODOS_SUCCESS,
   ADD_TODO_SERVER,
   ADD_TODO_LOCAL,
   REMOVE_TODO_LOCAL,
@@ -19,7 +19,7 @@ import { Todo, Filters } from '../Types'
 
 const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {
   switch (action.type) {
-    case FETCH_TODOS:
+    case FETCH_TODOS_SUCCESS:
       return action.todos
 
     case ADD_TODO_LOCAL:
@@ -31,7 +31,7 @@ const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {
       )
 
     case REMOVE_TODO_LOCAL:
-      return todos.filter(todo => todo.id !== action.id)
+      return todos.filter(todo => todo.id !== action.todo.id)
 
     case UPDATE_TODO_LOCAL:
       return todos.map(todo =>

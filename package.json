@@ -19,6 +19,7 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",
+    "redux-saga": "^1.0.5",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.3.2",
     "todomvc-app-css": "^2.2.0",

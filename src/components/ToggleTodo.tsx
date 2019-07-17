@@ -2,13 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, compose } from 'redux'
 import { updateTodo } from '../store/actions'
-import {
-  Todo,
-  TodoActionCreator,
-  RootState,
-  ConnectDispatch,
-  TDB,
-} from '../Types'
+import { Todo, TodoActionCreator, RootState, ConnectDispatch } from '../Types'
 import { withFirebase } from './firebase'
 
 interface Props {

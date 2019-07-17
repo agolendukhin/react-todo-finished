@@ -1,4 +1,4 @@
-import { TDB, Todo, Todos } from '../../Types'
+import { Todo, Todos } from '../../Types'
 import { db } from './Firebase'
 
 export default {

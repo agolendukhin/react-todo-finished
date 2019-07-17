@@ -10,13 +10,7 @@ import { bindActionCreators, compose } from 'redux'
 import { get } from 'lodash'
 import { updateTodo } from '../store/actions'
 
-import {
-  Todo,
-  RootState,
-  TodoActionCreator,
-  TDB,
-  ConnectDispatch,
-} from '../Types'
+import { Todo, RootState, TodoActionCreator, ConnectDispatch } from '../Types'
 
 import { withFirebase } from './firebase'
 

@@ -27,8 +27,8 @@ const Main: React.FC<MainProps> = props => {
     activeTodosCount,
     toggleAllTodos,
     firebase,
-    getTodos,
     isFetching,
+    getTodos,
   } = props
 
   useEffect(() => {
@@ -86,6 +86,7 @@ export default compose(
         {
           toggleAllTodos,
           getTodos,
+          dispatch,
         },
         dispatch
       )

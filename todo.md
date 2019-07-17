@@ -6,3 +6,4 @@
 4. Remake todos state
 5. Remove duplicate css
 6. Add error handling
+7. Decouple reducers from entities
