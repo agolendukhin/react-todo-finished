@@ -1,6 +1,6 @@
 import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects'
 import { api } from '../components/firebase'
-
+import { AnyAction } from 'redux'
 import {
   FETCH_TODOS_REQUESTED,
   FETCH_TODOS_SUCCESS,
@@ -34,7 +34,8 @@ function* getTodos() {
   }
 }
 
-function* addTodo({ todo }) {
+function* addTodo(action: AnyAction) {
+  const { todo } = action
   try {
     const { id: serverId } = yield call(api.addTodo, todo)
 
@@ -44,7 +45,8 @@ function* addTodo({ todo }) {
   }
 }
 
-function* removeTodo({ todo }) {
+function* removeTodo(action: AnyAction) {
+  const { todo } = action
   try {
     yield call(api.removeTodo, todo.serverId)
 
@@ -54,7 +56,8 @@ function* removeTodo({ todo }) {
   }
 }
 
-function* updateTodo({ todo }) {
+function* updateTodo(action: AnyAction) {
+  const { todo } = action
   try {
     yield call(api.updateTodo, todo)
 
@@ -64,7 +67,8 @@ function* updateTodo({ todo }) {
   }
 }
 
-function* toggleAllTodos({ todos, completed }) {
+function* toggleAllTodos(action: AnyAction) {
+  const { todos, completed } = action
   try {
     yield call(api.toggleAllTodos, todos, completed)
 
@@ -74,7 +78,8 @@ function* toggleAllTodos({ todos, completed }) {
   }
 }
 
-function* clearCompletedTodos({ todos }) {
+function* clearCompletedTodos(action: AnyAction) {
+  const { todos } = action
   try {
     yield call(api.clearCompleted, todos)
 
