@@ -64,5 +64,5 @@ const getLiClassName = ({ completed, editing = false }: ClassNamesProps) =>
 
 export default compose(
   withFirebase,
-  connect(({ todos }: RootState) => ({ todos }))
+  connect(({ todos: { todos } }: RootState) => ({ todos }))
 )(TodoComponent) as any

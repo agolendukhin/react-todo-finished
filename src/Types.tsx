@@ -1,5 +1,3 @@
-import firebase from 'firebase'
-
 export type Todo = {
   id: number
   serverId: string
@@ -16,16 +14,10 @@ export type Filters = {
   completed: boolean
 }
 
-export type Scope = {
-  isFetching: boolean
-}
-
 export type RootState = {
-  todos: Array<Todo>
+  todos: {
+    isFetching: boolean
+    todos: Todos
+  }
   filters: Filters
-  scope: Scope
 }
-
-export type TodoGetState = () => RootState
-
-export type TDB = firebase.firestore.Firestore

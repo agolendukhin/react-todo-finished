@@ -25,7 +25,7 @@ const VisibleTodoList: React.FC<Props> = props => {
   )
 }
 
-export default connect(
-  ({ todos, filters }: RootState) => ({ todos, filters }),
-  null
-)(VisibleTodoList)
+export default connect(({ todos: { todos }, filters }: RootState) => ({
+  todos,
+  filters,
+}))(VisibleTodoList)

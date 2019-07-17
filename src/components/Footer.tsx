@@ -29,6 +29,7 @@ const FooterComponent: React.FC<Props> = props => {
   )
 }
 
-export default connect(({ todos, filters }: RootState) => ({ todos, filters }))(
-  FooterComponent
-)
+export default connect(({ todos: { todos }, filters }: RootState) => ({
+  todos,
+  filters,
+}))(FooterComponent)

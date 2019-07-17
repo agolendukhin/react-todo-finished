@@ -30,5 +30,5 @@ const ToggleTodoComponent: React.FC<Props> = props => {
 
 export default compose(
   withFirebase,
-  connect(({ todos }: RootState) => ({ todos }))
+  connect(({ todos: { todos } }: RootState) => ({ todos }))
 )(ToggleTodoComponent) as any

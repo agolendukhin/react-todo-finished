@@ -15,41 +15,78 @@ import {
   TOGGLE_FILTER,
   SET_IS_FETCHING,
 } from './actions'
-import { Todo, Filters } from '../Types'
 
-const todosReducer = (todos: Array<Todo> = [], action: AnyAction) => {
+import { Todos, Filters } from '../Types'
+
+const defaultState = {
+  isFetching: false,
+  todos: [],
+}
+
+interface IDefaultState {
+  isFetching: boolean
+  todos: Todos
+}
+
+const todosReducer = (
+  state: IDefaultState = defaultState,
+  action: AnyAction
+) => {
   switch (action.type) {
     case FETCH_TODOS_SUCCESS:
-      return action.todos
+      return { ...state, todos: action.todos }
 
     case ADD_TODO_LOCAL:
-      return [...todos, action.todo]
+      return { ...state, todos: [...state.todos, action.todo] }
 
     case ADD_TODO_SERVER:
-      return todos.map(todo =>
-        todo.id === action.todo.id ? action.todo : todo
-      )
+      return {
+        ...state,
+        todos: state.todos.map(todo =>
+          todo.id === action.todo.id ? action.todo : todo
+        ),
+      }
 
     case REMOVE_TODO_LOCAL:
-      return todos.filter(todo => todo.id !== action.todo.id)
+      return {
+        ...state,
+        todos: state.todos.map(todo =>
+          todo.id === action.todo.id ? action.todo : todo
+        ),
+      }
 
     case UPDATE_TODO_LOCAL:
-      return todos.map(todo =>
-        todo.id === get(action, 'todo.id') ? action.todo : todo
-      )
+      return {
+        ...state,
+        todos: state.todos.map(todo =>
+          todo.id === get(action, 'todo.id') ? action.todo : todo
+        ),
+      }
 
     case TOGGLE_ALL_TODOS_LOCAL:
-      return todos.map(todo => ({ ...todo, completed: action.completed }))
+      return {
+        ...state,
+        todos: state.todos.map(todo => ({
+          ...todo,
+          completed: action.completed,
+        })),
+      }
 
     case CLEAR_COMPLETED_LOCAL:
-      return todos.filter(t => !t.completed)
+      return {
+        ...state,
+        todos: state.todos.filter(t => !t.completed),
+      }
+
+    case SET_IS_FETCHING:
+      return { ...state, isFetching: action.isFetching }
 
     case TOGGLE_ALL_TODOS_SERVER:
     case CLEAR_COMPLETED_SERVER:
     case REMOVE_TODO_SERVER:
     case UPDATE_TODO_SERVER:
     default:
-      return todos
+      return state
   }
 }
 
@@ -75,18 +112,7 @@ const filtersReducer = (
   }
 }
 
-const scopeReducer = (scope = { isFetching: false }, action: AnyAction) => {
-  switch (action.type) {
-    case SET_IS_FETCHING:
-      return { ...scope, isFetching: action.isFetching }
-
-    default:
-      return scope
-  }
-}
-
 export default combineReducers({
   todos: todosReducer,
   filters: filtersReducer,
-  scope: scopeReducer,
 })

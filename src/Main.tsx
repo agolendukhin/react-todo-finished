@@ -72,7 +72,7 @@ const Main: React.FC<MainProps> = props => {
 
 export default compose(
   withFirebase,
-  connect(({ todos, filters, scope: { isFetching } }: RootState) => {
+  connect(({ todos: { todos, isFetching }, filters }: RootState) => {
     const activeTodosCount = todos.filter(t => !t.completed).length
 
     return { activeTodosCount, todos, filters, isFetching }
