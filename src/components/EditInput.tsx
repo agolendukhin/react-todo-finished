@@ -6,22 +6,22 @@ import React, {
 } from 'react'
 
 import { connect } from 'react-redux'
-import { bindActionCreators, compose } from 'redux'
+import { compose, Dispatch } from 'redux'
 import { get } from 'lodash'
-import { updateTodo } from '../store/actions'
+import { UPDATE_TODO_LOCAL } from '../store/actions'
 
-import { Todo, RootState, TodoActionCreator, ConnectDispatch } from '../Types'
+import { Todo, RootState } from '../Types'
 
 import { withFirebase } from './firebase'
 
 interface Props {
   todo: Todo
-  updateTodo: TodoActionCreator
+  dispatch: Dispatch
   resetLiClassName: () => void
 }
 
 const EditInputComponent: React.FC<Props> = props => {
-  const { todo, updateTodo, resetLiClassName } = props
+  const { todo, dispatch, resetLiClassName } = props
   const [value, setValue] = useState(get(props, 'todo.text', ''))
 
   const onChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -31,9 +31,12 @@ const EditInputComponent: React.FC<Props> = props => {
     e.key === 'Enter' && resetLiClassName()
 
   const onBlur: FocusEventHandler<HTMLInputElement> = () => {
-    updateTodo({
-      ...todo,
-      text: value,
+    dispatch({
+      type: UPDATE_TODO_LOCAL,
+      todo: {
+        ...todo,
+        text: value,
+      },
     })
 
     resetLiClassName()
@@ -53,14 +56,5 @@ const EditInputComponent: React.FC<Props> = props => {
 
 export default compose(
   withFirebase,
-  connect(
-    ({ todos }: RootState) => ({ todos }),
-    (dispatch: ConnectDispatch) =>
-      bindActionCreators(
-        {
-          updateTodo,
-        },
-        dispatch
-      )
-  )
+  connect(({ todos }: RootState) => ({ todos }))
 )(EditInputComponent) as any

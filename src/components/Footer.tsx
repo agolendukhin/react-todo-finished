@@ -1,10 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Filters from './Filters'
 import ClearCompletedButton from './ClearCompleted'
-import { toggleFilter, clearCompleted } from '../store/actions'
-import { Todos, RootState, ConnectDispatch } from '../Types'
+import { Todos, RootState } from '../Types'
 
 interface Props {
   todos: Todos
@@ -31,14 +29,6 @@ const FooterComponent: React.FC<Props> = props => {
   )
 }
 
-export default connect(
-  ({ todos, filters }: RootState) => ({ todos, filters }),
-  (dispatch: ConnectDispatch) =>
-    bindActionCreators(
-      {
-        toggleFilter,
-        clearCompleted,
-      },
-      dispatch
-    )
-)(FooterComponent)
+export default connect(({ todos, filters }: RootState) => ({ todos, filters }))(
+  FooterComponent
+)

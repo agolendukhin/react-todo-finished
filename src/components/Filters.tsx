@@ -1,27 +1,22 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { toggleFilter } from '../store/actions'
-import {
-  Filters,
-  TodoActionCreator,
-  RootState,
-  ConnectDispatch,
-} from '../Types'
+import { Dispatch } from 'redux'
+import { TOGGLE_FILTER } from '../store/actions'
+import { Filters, RootState } from '../Types'
 
 interface Props {
+  dispatch: Dispatch
   filters: Filters
-  toggleFilter: TodoActionCreator
 }
 
 const FiltersComponent: React.FC<Props> = props => {
-  const { filters, toggleFilter } = props
+  const { filters, dispatch } = props
 
   useEffect(() => {
     const filter = window.location.hash.slice(2)
 
-    if (filter) toggleFilter(filter)
-  }, [toggleFilter])
+    if (filter) dispatch({ type: TOGGLE_FILTER, activatedFilter: filter })
+  }, [dispatch])
 
   return (
     <ul className="filters">
@@ -31,7 +26,9 @@ const FiltersComponent: React.FC<Props> = props => {
             <a
               href={'#/' + (filter === 'all' ? '' : filter)}
               className={activated ? 'selected' : ''}
-              onClick={() => toggleFilter(filter)}>
+              onClick={() =>
+                dispatch({ type: TOGGLE_FILTER, activatedFilter: filter })
+              }>
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </a>
           </li>
@@ -41,13 +38,6 @@ const FiltersComponent: React.FC<Props> = props => {
   )
 }
 
-export default connect(
-  ({ filters }: RootState) => ({ filters }),
-  (dispatch: ConnectDispatch) =>
-    bindActionCreators(
-      {
-        toggleFilter,
-      },
-      dispatch
-    )
-)(FiltersComponent)
+export default connect(({ filters }: RootState) => ({ filters }))(
+  FiltersComponent
+)

@@ -1,6 +1,5 @@
 import { createStore, Store, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware, { END, SagaMiddleware } from 'redux-saga'
-import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
@@ -19,9 +18,7 @@ const composeEnhancers =
 
 const sagaMiddleware = createSagaMiddleware()
 
-const enhancer = composeEnhancers(
-  applyMiddleware(thunk, sagaMiddleware, logger)
-)
+const enhancer = composeEnhancers(applyMiddleware(sagaMiddleware, logger))
 
 interface Istore extends Store {
   runSaga: SagaMiddleware['run']

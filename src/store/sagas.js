@@ -36,7 +36,7 @@ function* getTodos() {
 
 function* addTodo({ todo }) {
   try {
-    const { serverId } = yield call(api.addTodo, todo)
+    const { id: serverId } = yield call(api.addTodo, todo)
 
     yield put({ type: ADD_TODO_SERVER, todo: { ...todo, serverId } })
   } catch (error) {

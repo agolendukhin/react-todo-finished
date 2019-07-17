@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators, compose } from 'redux'
+import { compose, Dispatch } from 'redux'
 import '../node_modules/todomvc-common/base.css'
 import '../node_modules/todomvc-app-css/index.css'
 import { Header, VisibleTodoList, Footer, SignOut } from './components'
-import { toggleAllTodos, getTodos } from './store/actions'
-import { Todos, TodoActionCreator, RootState, ConnectDispatch } from './Types'
+import {
+  SET_IS_FETCHING,
+  FETCH_TODOS_REQUESTED,
+  TOGGLE_ALL_TODOS_LOCAL,
+} from './store/actions'
+import { Todos, RootState } from './Types'
 import { withFirebase } from './components/firebase'
 
 import Loading from './components/Loading'
@@ -13,8 +17,7 @@ import Loading from './components/Loading'
 interface MainProps {
   todos: Todos
   activeTodosCount: number
-  toggleAllTodos: TodoActionCreator
-  getTodos: TodoActionCreator
+  dispatch: Dispatch
   firebase: {
     signOut: () => void
   }
@@ -22,22 +25,16 @@ interface MainProps {
 }
 
 const Main: React.FC<MainProps> = props => {
-  const {
-    todos,
-    activeTodosCount,
-    toggleAllTodos,
-    firebase,
-    isFetching,
-    getTodos,
-  } = props
+  const { todos, activeTodosCount, firebase, isFetching, dispatch } = props
 
   useEffect(() => {
-    getTodos()
-  }, [getTodos])
+    dispatch({ type: SET_IS_FETCHING, isFetching: true })
+    dispatch({ type: FETCH_TODOS_REQUESTED })
+  }, [dispatch])
 
   const handleToggleAllTodos = () => {
     const completed = activeTodosCount ? true : false
-    toggleAllTodos(completed)
+    dispatch({ type: TOGGLE_ALL_TODOS_LOCAL, todos, completed })
   }
 
   const todosCount = todos.length
@@ -75,20 +72,9 @@ const Main: React.FC<MainProps> = props => {
 
 export default compose(
   withFirebase,
-  connect(
-    ({ todos, filters, scope: { isFetching } }: RootState) => {
-      const activeTodosCount = todos.filter(t => !t.completed).length
+  connect(({ todos, filters, scope: { isFetching } }: RootState) => {
+    const activeTodosCount = todos.filter(t => !t.completed).length
 
-      return { activeTodosCount, todos, filters, isFetching }
-    },
-    (dispatch: ConnectDispatch) =>
-      bindActionCreators(
-        {
-          toggleAllTodos,
-          getTodos,
-          dispatch,
-        },
-        dispatch
-      )
-  )
+    return { activeTodosCount, todos, filters, isFetching }
+  })
 )(Main) as React.ComponentType

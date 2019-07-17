@@ -1,5 +1,3 @@
-import { Action, ActionCreator } from 'redux'
-import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import firebase from 'firebase'
 
 export type Todo = {
@@ -28,14 +26,6 @@ export type RootState = {
   scope: Scope
 }
 
-export type TodoActionCreator = ActionCreator<
-  ThunkAction<void, RootState, {}, Action>
->
-
-export type TodoDispatch = ThunkDispatch<RootState, {}, Action>
-
 export type TodoGetState = () => RootState
-
-export type ConnectDispatch = ThunkDispatch<{}, {}, any>
 
 export type TDB = firebase.firestore.Firestore
