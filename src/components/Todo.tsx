@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
-import { compose, Dispatch } from 'redux'
+import {
+  compose,
+  Dispatch,
+  ActionCreator,
+  Action,
+  bindActionCreators,
+} from 'redux'
 import classNames from 'classnames'
 import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
-import { REMOVE_TODO_LOCAL } from '../store/actions'
 import { Todo, RootState } from '../Types'
 import { withFirebase } from './firebase'
+import { removeTodo } from '../store/todos'
 
 interface Props {
   todo: Todo
-  dispatch: Dispatch
+  removeTodo: ActionCreator<Action>
 }
 
 const TodoComponent: React.FC<Props> = props => {
   const initialCompleted = get(props, 'todo.completed')
 
-  const { todo, dispatch } = props
+  const { todo, removeTodo } = props
 
   const [completed, setCompleted] = useState(initialCompleted)
   const [className, setClassName] = useState(
@@ -41,10 +47,7 @@ const TodoComponent: React.FC<Props> = props => {
       <div className="view">
         <ToggleTodo todo={todo} />
         <label onDoubleClick={handleDoubleClick}>{todo.text}</label>
-        <button
-          className="destroy"
-          onClick={() => dispatch({ type: REMOVE_TODO_LOCAL, todo })}
-        />
+        <button className="destroy" onClick={() => removeTodo(todo)} />
       </div>
       <EditInput todo={todo} resetLiClassName={resetLiClassName} />
     </li>
@@ -64,5 +67,8 @@ const getLiClassName = ({ completed, editing = false }: ClassNamesProps) =>
 
 export default compose(
   withFirebase,
-  connect(({ todos: { todos } }: RootState) => ({ todos }))
+  connect(
+    ({ todos: { todos } }: RootState) => ({ todos }),
+    (dispatch: Dispatch) => bindActionCreators({ removeTodo }, dispatch)
+  )
 )(TodoComponent) as any

@@ -1,34 +1,38 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { compose, Dispatch } from 'redux'
-import { UPDATE_TODO_LOCAL } from '../store/actions'
+import {
+  compose,
+  Dispatch,
+  Action,
+  ActionCreator,
+  bindActionCreators,
+} from 'redux'
 import { Todo, RootState } from '../Types'
 import { withFirebase } from './firebase'
+import { updateTodo } from '../store/todos'
 
 interface Props {
   todo: Todo
-  dispatch: Dispatch
+  updateTodo: ActionCreator<Action>
 }
 
 const ToggleTodoComponent: React.FC<Props> = props => {
-  const { todo, dispatch } = props
+  const { todo, updateTodo } = props
 
   return (
     <input
       className="toggle"
       type="checkbox"
       checked={todo.completed}
-      onChange={() =>
-        dispatch({
-          type: UPDATE_TODO_LOCAL,
-          todo: { ...todo, completed: !todo.completed },
-        })
-      }
+      onChange={() => updateTodo({ ...todo, completed: !todo.completed })}
     />
   )
 }
 
 export default compose(
   withFirebase,
-  connect(({ todos: { todos } }: RootState) => ({ todos }))
+  connect(
+    ({ todos: { todos } }: RootState) => ({ todos }),
+    (dispatch: Dispatch) => bindActionCreators({ updateTodo }, dispatch)
+  )
 )(ToggleTodoComponent) as any

@@ -4,20 +4,26 @@ import React, {
   KeyboardEventHandler,
 } from 'react'
 import { connect } from 'react-redux'
-import { compose, Dispatch } from 'redux'
+import {
+  compose,
+  Dispatch,
+  ActionCreator,
+  Action,
+  bindActionCreators,
+} from 'redux'
 import { getNewId } from '../utils'
-import { ADD_TODO_LOCAL } from '../store/actions'
 import { get } from 'lodash'
 import { Todos, RootState } from '../Types'
 import { withFirebase } from './firebase'
+import { addTodo } from '../store/todos'
 
 interface Props {
   todos: Todos
-  dispatch: Dispatch
+  addTodo: ActionCreator<Action>
 }
 
 const HeaderComponent: React.FC<Props> = props => {
-  const { todos, dispatch } = props
+  const { todos, addTodo } = props
   const [value, setValue] = useState('')
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -25,14 +31,11 @@ const HeaderComponent: React.FC<Props> = props => {
 
   const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = e => {
     if (e.key === 'Enter' && value) {
-      dispatch({
-        type: ADD_TODO_LOCAL,
-        todo: {
-          id: getNewId(todos),
-          text: value,
-          completed: false,
-          serverId: '',
-        },
+      addTodo({
+        id: getNewId(todos),
+        text: value,
+        completed: false,
+        serverId: '',
       })
 
       setValue('')
@@ -55,5 +58,8 @@ const HeaderComponent: React.FC<Props> = props => {
 
 export default compose(
   withFirebase,
-  connect(({ todos: { todos } }: RootState) => ({ todos }))
+  connect(
+    ({ todos: { todos } }: RootState) => ({ todos }),
+    (dispatch: Dispatch) => bindActionCreators({ addTodo }, dispatch)
+  )
 )(HeaderComponent) as React.ComponentType

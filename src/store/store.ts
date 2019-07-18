@@ -1,9 +1,15 @@
-import { createStore, Store, applyMiddleware, compose } from 'redux'
+import {
+  createStore,
+  Store,
+  applyMiddleware,
+  compose,
+  combineReducers,
+} from 'redux'
 import createSagaMiddleware, { END, SagaMiddleware } from 'redux-saga'
 import logger from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
-import reducers from './reducers'
+import * as reducers from './reducers'
 import rootSaga from './sagas'
 
 const persistConfig = {
@@ -11,7 +17,10 @@ const persistConfig = {
   storage,
 }
 
-const persistedReducer = persistReducer(persistConfig, reducers)
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers(reducers)
+)
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
