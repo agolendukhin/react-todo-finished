@@ -15,7 +15,9 @@ import {
 import { get } from 'lodash'
 import { Todo, RootState } from '../Types'
 import { withFirebase } from './firebase'
-import { updateTodo } from '../store/todos'
+import { todosActions } from '../store/todos'
+
+const { updateTodo } = todosActions
 
 interface Props {
   todo: Todo
@@ -35,8 +37,10 @@ const EditInputComponent: React.FC<Props> = props => {
 
   const onBlur: FocusEventHandler<HTMLInputElement> = () => {
     updateTodo({
-      ...todo,
-      text: value,
+      todo: {
+        ...todo,
+        text: value,
+      },
     })
 
     resetLiClassName()

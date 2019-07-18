@@ -9,7 +9,9 @@ import {
 } from 'redux'
 import { Todo, RootState } from '../Types'
 import { withFirebase } from './firebase'
-import { updateTodo } from '../store/todos'
+import { todosActions } from '../store/todos'
+
+const { updateTodo } = todosActions
 
 interface Props {
   todo: Todo
@@ -24,7 +26,9 @@ const ToggleTodoComponent: React.FC<Props> = props => {
       className="toggle"
       type="checkbox"
       checked={todo.completed}
-      onChange={() => updateTodo({ ...todo, completed: !todo.completed })}
+      onChange={() =>
+        updateTodo({ todo: { ...todo, completed: !todo.completed } })
+      }
     />
   )
 }

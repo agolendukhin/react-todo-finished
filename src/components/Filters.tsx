@@ -15,7 +15,7 @@ const FiltersComponent: React.FC<Props> = props => {
   useEffect(() => {
     const filter = window.location.hash.slice(2)
 
-    if (filter) toggleFilter({ activatedFilter: filter })
+    if (filter) toggleFilter(filter)
   }, [toggleFilter])
 
   return (
@@ -26,7 +26,7 @@ const FiltersComponent: React.FC<Props> = props => {
             <a
               href={'#/' + (filter === 'all' ? '' : filter)}
               className={activated ? 'selected' : ''}
-              onClick={() => toggleFilter({ activatedFilter: filter })}>
+              onClick={() => toggleFilter(filter)}>
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </a>
           </li>

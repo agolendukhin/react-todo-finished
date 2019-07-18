@@ -15,7 +15,9 @@ import { Todos, RootState } from './Types'
 import { withFirebase } from './components/firebase'
 
 import Loading from './components/Loading'
-import { toggleAllTodos, fetchTodos } from './store/todos'
+import { todosActions } from './store/todos'
+
+const { toggleAllTodos, fetchTodos } = todosActions
 
 interface MainProps {
   todos: Todos
@@ -46,7 +48,7 @@ const Main: React.FC<MainProps> = props => {
 
   const handleToggleAllTodos = () => {
     const completed = activeTodosCount ? true : false
-    toggleAllTodos(todos, completed)
+    toggleAllTodos({ todos, completed })
   }
 
   const todosCount = todos.length

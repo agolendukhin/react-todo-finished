@@ -9,7 +9,9 @@ import {
 } from 'redux'
 import { RootState, Todos } from '../Types'
 import { withFirebase } from './firebase'
-import { clearCompleted } from '../store/todos'
+import { todosActions } from '../store/todos'
+
+const { clearCompleted } = todosActions
 
 interface Props {
   todos: Todos
@@ -23,7 +25,9 @@ const ClearCompletedComponent: React.FC<Props> = ({
   clearCompleted,
 }) =>
   display ? (
-    <button className="clear-completed" onClick={() => clearCompleted(todos)}>
+    <button
+      className="clear-completed"
+      onClick={() => clearCompleted({ todos })}>
       Clear completed
     </button>
   ) : null

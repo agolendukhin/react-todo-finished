@@ -1,32 +1,45 @@
 import { AnyAction } from 'redux'
-import { get } from 'lodash'
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
-import { Todos, Todo } from '../Types'
+import { Todos } from '../Types'
 import { api } from '../components/firebase'
+import { createReducer, createAction } from 'redux-starter-kit'
 
-const FETCH_TODOS_REQUESTED = 'FETCH_TODOS_REQUESTED'
-const FETCH_TODOS_SUCCESS = 'FETCH_TODOS_SUCCESS'
-const FETCH_TODOS_ERROR = 'FETCH_TODOS_ERROR'
+const createTodoAction = (name: string, keys?: Array<string>) => {
+  name = name.replace(/\s/g, '_')
+  return (keys || ['local', 'server', 'error'])
+    .map(postfix => ({
+      [postfix]: createAction(
+        'app/todos/' + `${name}_${postfix}`.toUpperCase()
+      ),
+    }))
+    .reduce((acc, curr) => {
+      const postfix = Object.keys(curr)[0]
+      const name = Object.values(curr)[0]
+      acc[postfix] = name
+      return acc
+    }, {})
+}
 
-const ADD_TODO_LOCAL = 'ADD_TODO_LOCAL'
-const ADD_TODO_SERVER = 'ADD_TODO_SERVER'
-const ADD_TODO_SERVER_ERROR = 'ADD_TODO_SERVER_ERROR'
+const addTodo = createTodoAction('add todo')
+const removeTodo = createTodoAction('remove todo')
+const updateTodo = createTodoAction('update todo')
+const toggleAllTodos = createTodoAction('toggle all todos')
+const clearCompleted = createTodoAction('clear completed')
 
-const REMOVE_TODO_LOCAL = 'REMOVE_TODO_LOCAL'
-const REMOVE_TODO_SERVER = 'REMOVE_TODO_SERVER'
-const REMOVE_TODO_SERVER_ERROR = 'REMOVE_TODO_SERVER_ERROR'
+const fetchTodos = createTodoAction('fetch todos', [
+  'requested',
+  'success',
+  'error',
+])
 
-const UPDATE_TODO_LOCAL = 'UPDATE_TODO_LOCAL'
-const UPDATE_TODO_SERVER = 'UPDATE_TODO_SERVER'
-const UPDATE_TODO_SERVER_ERROR = 'UPDATE_TODO_SERVER_ERROR'
-
-const TOGGLE_ALL_TODOS_LOCAL = 'TOGGLE_ALL_TODOS_LOCAL'
-const TOGGLE_ALL_TODOS_SERVER = 'TOGGLE_ALL_TODOS_SERVER'
-const TOGGLE_ALL_TODOS_SERVER_ERROR = 'TOGGLE_ALL_TODOS_SERVER_ERROR'
-
-const CLEAR_COMPLETED_LOCAL = 'CLEAR_COMPLETED_LOCAL'
-const CLEAR_COMPLETED_SERVER = 'CLEAR_COMPLETED_SERVER'
-const CLEAR_COMPLETED_SERVER_ERROR = 'CLEAR_COMPLETED_SERVER_ERROR'
+export const todosActions = {
+  addTodo: addTodo.local,
+  removeTodo: removeTodo.local,
+  updateTodo: updateTodo.local,
+  toggleAllTodos: toggleAllTodos.local,
+  clearCompleted: clearCompleted.local,
+  fetchTodos: fetchTodos.requested,
+}
 
 interface ITodosState {
   isFetching: boolean
@@ -40,165 +53,148 @@ const initialState: ITodosState = {
 
 export default (state = initialState, action: AnyAction): ITodosState => {
   switch (action.type) {
-    case FETCH_TODOS_REQUESTED:
+    case fetchTodos.requested.toString():
       return { ...state, isFetching: true }
 
-    case FETCH_TODOS_SUCCESS:
-      return { ...state, todos: action.todos, isFetching: false }
+    case fetchTodos.success.toString():
+      return { ...state, todos: action.payload.todos, isFetching: false }
 
-    case ADD_TODO_LOCAL:
-      return { ...state, todos: [...state.todos, action.todo] }
+    case addTodo.local.toString():
+      return { ...state, todos: [...state.todos, action.payload.todo] }
 
-    case ADD_TODO_SERVER:
+    case addTodo.server.toString():
       return {
         ...state,
         todos: state.todos.map(todo =>
-          todo.id === action.todo.id ? action.todo : todo
+          todo.id === action.payload.todo.id ? action.payload.todo : todo
         ),
       }
 
-    case REMOVE_TODO_LOCAL:
+    case removeTodo.local.toString():
+      return {
+        ...state,
+        todos: state.todos.filter(todo => todo.id !== action.payload.todo.id),
+      }
+
+    case updateTodo.local.toString():
       return {
         ...state,
         todos: state.todos.map(todo =>
-          todo.id === action.todo.id ? action.todo : todo
+          todo.id === action.payload.todo.id ? action.payload.todo : todo
         ),
       }
 
-    case UPDATE_TODO_LOCAL:
-      return {
-        ...state,
-        todos: state.todos.map(todo =>
-          todo.id === get(action, 'todo.id') ? action.todo : todo
-        ),
-      }
-
-    case TOGGLE_ALL_TODOS_LOCAL:
+    case toggleAllTodos.local.toString():
       return {
         ...state,
         todos: state.todos.map(todo => ({
           ...todo,
-          completed: action.completed,
+          completed: action.payload.completed,
         })),
       }
 
-    case CLEAR_COMPLETED_LOCAL:
+    case clearCompleted.local.toString():
       return {
         ...state,
         todos: state.todos.filter(t => !t.completed),
       }
 
-    case TOGGLE_ALL_TODOS_SERVER:
-    case CLEAR_COMPLETED_SERVER:
-    case REMOVE_TODO_SERVER:
-    case UPDATE_TODO_SERVER:
     default:
       return state
   }
 }
 
-export const fetchTodos = () => ({
-  type: FETCH_TODOS_REQUESTED,
-})
-
-export const addTodo = (todo: Todo) => ({ type: ADD_TODO_LOCAL, todo })
-
-export const removeTodo = (todo: Todo) => ({ type: REMOVE_TODO_LOCAL, todo })
-
-export const updateTodo = (todo: Todo) => ({ type: UPDATE_TODO_LOCAL, todo })
-
-export const toggleAllTodos = (todos: Todos, completed: boolean) => ({
-  type: TOGGLE_ALL_TODOS_LOCAL,
-  todos,
-  completed,
-})
-
-export const clearCompleted = (todos: Todos) => ({
-  type: CLEAR_COMPLETED_LOCAL,
-  todos,
-})
-
 export const sagas = [
   {
-    action: FETCH_TODOS_REQUESTED,
+    action: fetchTodos.requested,
     effect: takeLatest,
     *saga() {
       try {
         const todos = yield call(api.fetchTodos)
 
-        yield put({ type: FETCH_TODOS_SUCCESS, todos, isFetching: false })
+        yield put(fetchTodos.success({ todos }))
       } catch (error) {
-        yield put({ type: FETCH_TODOS_ERROR, error })
+        yield put(fetchTodos.error({ error }))
       }
     },
   },
   {
-    action: ADD_TODO_LOCAL,
+    action: addTodo.local,
     effect: takeEvery,
     *saga(action: AnyAction) {
-      const { todo } = action
+      const {
+        payload: { todo },
+      } = action
       try {
         const { id: serverId } = yield call(api.addTodo, todo)
 
-        yield put({ type: ADD_TODO_SERVER, todo: { ...todo, serverId } })
+        yield put(addTodo.server({ todo: { ...todo, serverId } }))
       } catch (error) {
-        yield put({ type: ADD_TODO_SERVER_ERROR, error })
+        yield put(addTodo.error({ error }))
       }
     },
   },
   {
-    action: REMOVE_TODO_LOCAL,
+    action: removeTodo.local,
     effect: takeEvery,
     *saga(action: AnyAction) {
-      const { todo } = action
+      const {
+        payload: { todo },
+      } = action
       try {
         yield call(api.removeTodo, todo.serverId)
 
-        yield put({ type: REMOVE_TODO_SERVER })
+        yield put(removeTodo.server())
       } catch (error) {
-        yield put({ type: REMOVE_TODO_SERVER_ERROR, error })
+        yield put(removeTodo.error({ error }))
       }
     },
   },
   {
-    action: UPDATE_TODO_LOCAL,
+    action: updateTodo.local,
     effect: takeEvery,
     *saga(action: AnyAction) {
-      const { todo } = action
+      const {
+        payload: { todo },
+      } = action
       try {
         yield call(api.updateTodo, todo)
 
-        yield put({ type: UPDATE_TODO_SERVER })
+        yield put(updateTodo.server())
       } catch (error) {
-        yield put({ type: UPDATE_TODO_SERVER_ERROR, error })
+        yield put(updateTodo.error({ error }))
       }
     },
   },
   {
-    action: TOGGLE_ALL_TODOS_LOCAL,
+    action: toggleAllTodos.local,
     effect: takeEvery,
     *saga(action: AnyAction) {
-      const { todos, completed } = action
+      const {
+        payload: { todos, completed },
+      } = action
       try {
         yield call(api.toggleAllTodos, todos, completed)
 
-        yield put({ type: TOGGLE_ALL_TODOS_SERVER })
+        yield put(toggleAllTodos.server())
       } catch (error) {
-        yield put({ type: TOGGLE_ALL_TODOS_SERVER_ERROR, error })
+        yield put(toggleAllTodos.error({ error }))
       }
     },
   },
   {
-    action: CLEAR_COMPLETED_LOCAL,
+    action: clearCompleted.local,
     effect: takeEvery,
     *saga(action: AnyAction) {
-      const { todos } = action
+      const {
+        payload: { todos },
+      } = action
       try {
         yield call(api.clearCompleted, todos)
 
-        yield put({ type: CLEAR_COMPLETED_SERVER })
+        yield put(clearCompleted.server())
       } catch (error) {
-        yield put({ type: CLEAR_COMPLETED_SERVER_ERROR, error })
+        yield put(clearCompleted.error({ error }))
       }
     },
   },

@@ -13,7 +13,9 @@ import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
 import { Todo, RootState } from '../Types'
 import { withFirebase } from './firebase'
-import { removeTodo } from '../store/todos'
+import { todosActions } from '../store/todos'
+
+const { removeTodo } = todosActions
 
 interface Props {
   todo: Todo
@@ -47,7 +49,7 @@ const TodoComponent: React.FC<Props> = props => {
       <div className="view">
         <ToggleTodo todo={todo} />
         <label onDoubleClick={handleDoubleClick}>{todo.text}</label>
-        <button className="destroy" onClick={() => removeTodo(todo)} />
+        <button className="destroy" onClick={() => removeTodo({ todo })} />
       </div>
       <EditInput todo={todo} resetLiClassName={resetLiClassName} />
     </li>

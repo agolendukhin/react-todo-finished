@@ -3,7 +3,7 @@ import { sagas as todosSagas } from './todos'
 
 export default function* rootSaga() {
   yield all(
-    todosSagas.map(function*(saga) {
+    [...todosSagas].map(function*(saga) {
       yield saga.effect(saga.action, saga.saga)
     })
   )

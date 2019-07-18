@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
 
-const TOGGLE_FILTER = 'TOGGLE_FILTER'
+const TOGGLE_FILTER = 'app/filters/TOGGLE_FILTER'
 
 interface IFiltersState {
   all: boolean

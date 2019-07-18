@@ -15,7 +15,9 @@ import { getNewId } from '../utils'
 import { get } from 'lodash'
 import { Todos, RootState } from '../Types'
 import { withFirebase } from './firebase'
-import { addTodo } from '../store/todos'
+import { todosActions } from '../store/todos'
+
+const { addTodo } = todosActions
 
 interface Props {
   todos: Todos
@@ -32,10 +34,12 @@ const HeaderComponent: React.FC<Props> = props => {
   const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = e => {
     if (e.key === 'Enter' && value) {
       addTodo({
-        id: getNewId(todos),
-        text: value,
-        completed: false,
-        serverId: '',
+        todo: {
+          id: getNewId(todos),
+          text: value,
+          completed: false,
+          serverId: '',
+        },
       })
 
       setValue('')
