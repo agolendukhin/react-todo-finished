@@ -24,7 +24,7 @@ export default {
       .doc(todo.serverId)
       .update(todo),
 
-  toggleAllTodos: (todos: Todos, completed: boolean) => {
+  toggleAllTodos: (todos: Todos, completed: boolean | undefined) => {
     const batch = db.batch()
 
     todos.forEach(todo => {

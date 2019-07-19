@@ -6,6 +6,6 @@
 4. <strike>Remake todos state</strike>
 5. Remove duplicate css
 6. Add error handling
-7. Decouple reducers from entities
+7. <strike>Decouple reducers from entities</strike>
 8. <strike>Ducks with sagas</strike>
-9. add types to Actions
+9. <strike>add types to Actions</strike>

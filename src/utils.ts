@@ -11,13 +11,17 @@ interface Iacc {
   [key: string]: PayloadActionCreator<any, string>
 }
 
-export const createTodoAction = (name: string, keys?: Array<string>) => {
+export const createAppAction = (
+  name: string,
+  module = 'todos',
+  keys?: Array<string>
+) => {
   const accInitial: Iacc = {}
   name = name.replace(/\s/g, '_')
   return (keys || ['local', 'server', 'error'])
     .map(postfix => [
       postfix,
-      createAction('app/todos/' + `${name}_${postfix}`.toUpperCase()),
+      createAction(`app/${module}/` + `${name}_${postfix}`.toUpperCase()),
     ])
     .reduce((acc, curr) => {
       const postfix = curr[0] as string

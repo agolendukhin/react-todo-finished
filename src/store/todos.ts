@@ -1,18 +1,16 @@
-import { AnyAction } from 'redux'
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
 import { createReducer } from 'redux-starter-kit'
-import { find } from 'lodash'
-import { Todos, Todo } from '../Types'
+import { Todos, TodoAction, TodosAction } from '../Types'
 import { api } from '../components/firebase'
-import { createTodoAction } from '../utils'
+import { createAppAction } from '../utils'
+import { Todos as TodosEntities } from './entities'
 
-const addTodo = createTodoAction('add todo')
-const removeTodo = createTodoAction('remove todo')
-const updateTodo = createTodoAction('update todo')
-const toggleAllTodos = createTodoAction('toggle all todos')
-const clearCompleted = createTodoAction('clear completed')
-
-const fetchTodos = createTodoAction('fetch todos', [
+const addTodo = createAppAction('add todo', 'todos')
+const removeTodo = createAppAction('remove todo', 'todos')
+const updateTodo = createAppAction('update todo', 'todos')
+const toggleAllTodos = createAppAction('toggle all todos', 'todos')
+const clearCompleted = createAppAction('clear completed', 'todos')
+const fetchTodos = createAppAction('fetch todos', 'todos', [
   'requested',
   'success',
   'error',
@@ -38,42 +36,14 @@ const initialState: ITodosState = {
 }
 
 export default createReducer(initialState, {
-  [fetchTodos.requested.type]: state => {
-    state.isFetching = false
-  },
-  [fetchTodos.success.type]: (state, action) => {
-    state.isFetching = false
-    state.todos = action.payload.todos
-  },
-  [addTodo.local.type]: (state, action) => {
-    state.todos.push(action.payload.todo)
-  },
-  [addTodo.server.type]: (state, action) => {
-    const newTodo = action.payload.todo
-    let todo2update = find(state.todos, {
-      id: newTodo.id,
-    }) as Todo
-
-    todo2update.serverId = newTodo.serverId
-  },
-  [removeTodo.local.type]: (state, action) => {
-    state.todos = state.todos.filter(todo => todo.id !== action.payload.todo.id)
-  },
-  [updateTodo.local.type]: (state, action) => {
-    const newTodo = action.payload.todo
-    state.todos = state.todos.map(todo =>
-      todo.id === newTodo.id ? newTodo : todo
-    )
-  },
-  [toggleAllTodos.local.type]: (state, action) => {
-    state.todos = state.todos.map(todo => ({
-      ...todo,
-      completed: action.payload.completed,
-    }))
-  },
-  [clearCompleted.local.type]: state => {
-    state.todos = state.todos.filter(t => !t.completed)
-  },
+  [fetchTodos.requested.type]: TodosEntities.fetchTodosRequested,
+  [fetchTodos.success.type]: TodosEntities.fetchTodosSuccess,
+  [addTodo.local.type]: TodosEntities.addTodoLocal,
+  [addTodo.server.type]: TodosEntities.addTodoServer,
+  [removeTodo.local.type]: TodosEntities.removeTodoLocal,
+  [updateTodo.local.type]: TodosEntities.updateTodoLocal,
+  [toggleAllTodos.local.type]: TodosEntities.toggleAllTodosLocal,
+  [clearCompleted.local.type]: TodosEntities.clearCompletedLocal,
 })
 
 export const sagas = [
@@ -93,7 +63,7 @@ export const sagas = [
   {
     action: addTodo.local,
     effect: takeEvery,
-    *saga(action: AnyAction) {
+    *saga(action: TodoAction) {
       const {
         payload: { todo },
       } = action
@@ -109,7 +79,7 @@ export const sagas = [
   {
     action: removeTodo.local,
     effect: takeEvery,
-    *saga(action: AnyAction) {
+    *saga(action: TodoAction) {
       const {
         payload: { todo },
       } = action
@@ -125,7 +95,7 @@ export const sagas = [
   {
     action: updateTodo.local,
     effect: takeEvery,
-    *saga(action: AnyAction) {
+    *saga(action: TodoAction) {
       const {
         payload: { todo },
       } = action
@@ -141,7 +111,7 @@ export const sagas = [
   {
     action: toggleAllTodos.local,
     effect: takeEvery,
-    *saga(action: AnyAction) {
+    *saga(action: TodosAction) {
       const {
         payload: { todos, completed },
       } = action
@@ -157,7 +127,7 @@ export const sagas = [
   {
     action: clearCompleted.local,
     effect: takeEvery,
-    *saga(action: AnyAction) {
+    *saga(action: TodosAction) {
       const {
         payload: { todos },
       } = action

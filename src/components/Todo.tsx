@@ -36,7 +36,7 @@ const TodoComponent: React.FC<Props> = props => {
     const nextCompleted = props.todo.completed
 
     setCompleted(nextCompleted)
-    setClassName(getLiClassName({ completed: nextCompleted }))
+    setClassName(getLiClassName({ completed: !!nextCompleted }))
   }, [props.todo.completed])
 
   const handleDoubleClick = () =>
