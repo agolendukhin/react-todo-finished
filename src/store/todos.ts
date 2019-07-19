@@ -1,8 +1,9 @@
 import { AnyAction } from 'redux'
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
-import { Todos } from '../Types'
-import { api } from '../components/firebase'
 import { createReducer, createAction } from 'redux-starter-kit'
+import { find } from 'lodash'
+import { Todos, Todo } from '../Types'
+import { api } from '../components/firebase'
 
 const createTodoAction = (name: string, keys?: Array<string>) => {
   name = name.replace(/\s/g, '_')
@@ -51,58 +52,44 @@ const initialState: ITodosState = {
   todos: [],
 }
 
-export default (state = initialState, action: AnyAction): ITodosState => {
-  switch (action.type) {
-    case fetchTodos.requested.toString():
-      return { ...state, isFetching: true }
+export default createReducer(initialState, {
+  [fetchTodos.requested.toString()]: state => {
+    state.isFetching = false
+  },
+  [fetchTodos.success.toString()]: (state, action) => {
+    state.isFetching = false
+    state.todos = action.payload.todos
+  },
+  [addTodo.local.toString()]: (state, action) => {
+    state.todos.push(action.payload.todo)
+  },
+  [addTodo.server.toString()]: (state, action) => {
+    const newTodo = action.payload.todo
+    let todo2update = find(state.todos, {
+      id: newTodo.id,
+    }) as Todo
 
-    case fetchTodos.success.toString():
-      return { ...state, todos: action.payload.todos, isFetching: false }
-
-    case addTodo.local.toString():
-      return { ...state, todos: [...state.todos, action.payload.todo] }
-
-    case addTodo.server.toString():
-      return {
-        ...state,
-        todos: state.todos.map(todo =>
-          todo.id === action.payload.todo.id ? action.payload.todo : todo
-        ),
-      }
-
-    case removeTodo.local.toString():
-      return {
-        ...state,
-        todos: state.todos.filter(todo => todo.id !== action.payload.todo.id),
-      }
-
-    case updateTodo.local.toString():
-      return {
-        ...state,
-        todos: state.todos.map(todo =>
-          todo.id === action.payload.todo.id ? action.payload.todo : todo
-        ),
-      }
-
-    case toggleAllTodos.local.toString():
-      return {
-        ...state,
-        todos: state.todos.map(todo => ({
-          ...todo,
-          completed: action.payload.completed,
-        })),
-      }
-
-    case clearCompleted.local.toString():
-      return {
-        ...state,
-        todos: state.todos.filter(t => !t.completed),
-      }
-
-    default:
-      return state
-  }
-}
+    todo2update.serverId = newTodo.serverId
+  },
+  [removeTodo.local.toString()]: (state, action) => {
+    state.todos = state.todos.filter(todo => todo.id !== action.payload.todo.id)
+  },
+  [updateTodo.local.toString()]: (state, action) => {
+    const newTodo = action.payload.todo
+    state.todos = state.todos.map(todo =>
+      todo.id === newTodo.id ? newTodo : todo
+    )
+  },
+  [toggleAllTodos.local.toString()]: (state, action) => {
+    state.todos = state.todos.map(todo => ({
+      ...todo,
+      completed: action.payload.completed,
+    }))
+  },
+  [clearCompleted.local.toString()]: state => {
+    state.todos = state.todos.filter(t => !t.completed)
+  },
+})
 
 export const sagas = [
   {
