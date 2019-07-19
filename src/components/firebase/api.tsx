@@ -10,8 +10,9 @@ export default {
         querySnapshot.docs.map(doc => ({ ...doc.data(), serverId: doc.id }))
       ),
 
-  addTodo: (todo: Todo) => db.collection('todos').add(todo),
-
+  addTodo: (todo: Todo, userId: string) => {
+    return db.collection('todos').add({ ...todo, userId })
+  },
   removeTodo: (serverId: string) =>
     db
       .collection('todos')

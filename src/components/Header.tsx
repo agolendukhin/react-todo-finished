@@ -16,16 +16,20 @@ import { get } from 'lodash'
 import { Todos, RootState } from '../Types'
 import { withFirebase } from './firebase'
 import { todosActions } from '../store/todos'
+import { withAuthUser } from './session'
 
 const { addTodo } = todosActions
 
 interface Props {
   todos: Todos
   addTodo: ActionCreator<Action>
+  authUser: {
+    uid: string
+  }
 }
 
 const HeaderComponent: React.FC<Props> = props => {
-  const { todos, addTodo } = props
+  const { todos, addTodo, authUser } = props
   const [value, setValue] = useState('')
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = e =>
@@ -40,6 +44,7 @@ const HeaderComponent: React.FC<Props> = props => {
           completed: false,
           serverId: '',
         },
+        userId: authUser.uid,
       })
 
       setValue('')
@@ -62,6 +67,7 @@ const HeaderComponent: React.FC<Props> = props => {
 
 export default compose(
   withFirebase,
+  withAuthUser,
   connect(
     ({ todos: { todos } }: RootState) => ({ todos }),
     (dispatch: Dispatch) => bindActionCreators({ addTodo }, dispatch)

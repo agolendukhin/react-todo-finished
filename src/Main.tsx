@@ -16,6 +16,7 @@ import { withFirebase } from './components/firebase'
 
 import Loading from './components/Loading'
 import { todosActions } from './store/todos'
+import { withAuthUser } from './components/session'
 
 const { toggleAllTodos, fetchTodos } = todosActions
 
@@ -86,6 +87,7 @@ const Main: React.FC<MainProps> = props => {
 
 export default compose(
   withFirebase,
+  withAuthUser,
   connect(
     ({ todos: { todos, isFetching }, filters }: RootState) => {
       const activeTodosCount = todos.filter(t => !t.completed).length

@@ -65,10 +65,10 @@ export const sagas = [
     effect: takeEvery,
     *saga(action: TodoAction) {
       const {
-        payload: { todo },
+        payload: { todo, userId },
       } = action
       try {
-        const { id: serverId } = yield call(api.addTodo, todo)
+        const { id: serverId } = yield call(api.addTodo, todo, userId)
 
         yield put(addTodo.server({ todo: { ...todo, serverId } }))
       } catch (error) {

@@ -29,6 +29,7 @@ export interface RootState {
 export interface TodoAction extends Action {
   payload: {
     todo: Todo
+    userId: string
   }
 }
 

@@ -1,7 +1,7 @@
 #TODO
 
 1. Fix offline mode
-2. Add todos collection by auth user
+2. <strike>Add todos collection by auth user</strike>
 3. <strike>Think about how to pass db to api</strike>
 4. <strike>Remake todos state</strike>
 5. Remove duplicate css
