@@ -8,3 +8,4 @@
 6. Add error handling
 7. Decouple reducers from entities
 8. <strike>Ducks with sagas</strike>
+9. add types to Actions
