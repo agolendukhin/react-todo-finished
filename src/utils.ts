@@ -1,7 +1,28 @@
 import { Todos } from './Types'
 import { get, maxBy } from 'lodash'
+import { createAction, PayloadActionCreator } from 'redux-starter-kit'
 
 export const getNewId = (array: Todos) => {
   let lastId = get(maxBy(array, 'id'), 'id', 0)
   return ++lastId
+}
+
+interface Iacc {
+  [key: string]: PayloadActionCreator<any, string>
+}
+
+export const createTodoAction = (name: string, keys?: Array<string>) => {
+  const accInitial: Iacc = {}
+  name = name.replace(/\s/g, '_')
+  return (keys || ['local', 'server', 'error'])
+    .map(postfix => [
+      postfix,
+      createAction('app/todos/' + `${name}_${postfix}`.toUpperCase()),
+    ])
+    .reduce((acc, curr) => {
+      const postfix = curr[0] as string
+      const action = curr[1] as PayloadActionCreator<any, string>
+      acc[postfix] = action
+      return acc
+    }, accInitial)
 }

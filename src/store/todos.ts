@@ -1,25 +1,10 @@
 import { AnyAction } from 'redux'
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
-import { createReducer, createAction } from 'redux-starter-kit'
+import { createReducer } from 'redux-starter-kit'
 import { find } from 'lodash'
 import { Todos, Todo } from '../Types'
 import { api } from '../components/firebase'
-
-const createTodoAction = (name: string, keys?: Array<string>) => {
-  name = name.replace(/\s/g, '_')
-  return (keys || ['local', 'server', 'error'])
-    .map(postfix => ({
-      [postfix]: createAction(
-        'app/todos/' + `${name}_${postfix}`.toUpperCase()
-      ),
-    }))
-    .reduce((acc, curr) => {
-      const postfix = Object.keys(curr)[0]
-      const name = Object.values(curr)[0]
-      acc[postfix] = name
-      return acc
-    }, {})
-}
+import { createTodoAction } from '../utils'
 
 const addTodo = createTodoAction('add todo')
 const removeTodo = createTodoAction('remove todo')
@@ -53,17 +38,17 @@ const initialState: ITodosState = {
 }
 
 export default createReducer(initialState, {
-  [fetchTodos.requested.toString()]: state => {
+  [fetchTodos.requested.type]: state => {
     state.isFetching = false
   },
-  [fetchTodos.success.toString()]: (state, action) => {
+  [fetchTodos.success.type]: (state, action) => {
     state.isFetching = false
     state.todos = action.payload.todos
   },
-  [addTodo.local.toString()]: (state, action) => {
+  [addTodo.local.type]: (state, action) => {
     state.todos.push(action.payload.todo)
   },
-  [addTodo.server.toString()]: (state, action) => {
+  [addTodo.server.type]: (state, action) => {
     const newTodo = action.payload.todo
     let todo2update = find(state.todos, {
       id: newTodo.id,
@@ -71,22 +56,22 @@ export default createReducer(initialState, {
 
     todo2update.serverId = newTodo.serverId
   },
-  [removeTodo.local.toString()]: (state, action) => {
+  [removeTodo.local.type]: (state, action) => {
     state.todos = state.todos.filter(todo => todo.id !== action.payload.todo.id)
   },
-  [updateTodo.local.toString()]: (state, action) => {
+  [updateTodo.local.type]: (state, action) => {
     const newTodo = action.payload.todo
     state.todos = state.todos.map(todo =>
       todo.id === newTodo.id ? newTodo : todo
     )
   },
-  [toggleAllTodos.local.toString()]: (state, action) => {
+  [toggleAllTodos.local.type]: (state, action) => {
     state.todos = state.todos.map(todo => ({
       ...todo,
       completed: action.payload.completed,
     }))
   },
-  [clearCompleted.local.toString()]: state => {
+  [clearCompleted.local.type]: state => {
     state.todos = state.todos.filter(t => !t.completed)
   },
 })
