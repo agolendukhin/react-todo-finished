@@ -16,6 +16,16 @@ export type Filters = {
   completed: boolean
 }
 
+export type Error = {
+  id: string
+  title: string
+  message: string
+}
+
+export type Errors = {
+  errors: Array<Error>
+}
+
 export interface TodosState {
   isFetching: boolean
   todos: Todos
@@ -24,6 +34,7 @@ export interface TodosState {
 export interface RootState {
   todos: TodosState
   filters: Filters
+  errors: Errors
 }
 
 export interface TodoAction extends Action {
@@ -38,6 +49,17 @@ export interface TodosAction extends Action {
     todos: Todos
     completed?: boolean | undefined
   }
+}
+
+export interface ErrorAction extends Action {
+  payload: {
+    error: Error
+    errorId?: string
+  }
+}
+
+export type AuthUser = {
+  uid: string
 }
 
 export type Action = TodoAction | TodosAction

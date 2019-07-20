@@ -13,7 +13,7 @@ import {
 } from 'redux'
 import { getNewId } from '../utils'
 import { get } from 'lodash'
-import { Todos, RootState } from '../Types'
+import { Todos, RootState, AuthUser } from '../Types'
 import { withFirebase } from './firebase'
 import { todosActions } from '../store/todos'
 import { withAuthUser } from './session'
@@ -23,9 +23,7 @@ const { addTodo } = todosActions
 interface Props {
   todos: Todos
   addTodo: ActionCreator<Action>
-  authUser: {
-    uid: string
-  }
+  authUser: AuthUser
 }
 
 const HeaderComponent: React.FC<Props> = props => {

@@ -5,17 +5,7 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { History } from 'history'
-
-const SignIn = styled.button`
-  background-color: rgb(255, 255, 255);
-  border: 4px;
-  border-radius: 0px;
-  color: #4d4d4d;
-  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  padding: 6px 12px;
-  font-weight: 300;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
-`
+import { default as SignIn } from './Button'
 
 const Header = styled.div`
   text-align: center;

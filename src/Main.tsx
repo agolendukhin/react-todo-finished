@@ -7,16 +7,14 @@ import {
   ActionCreator,
   bindActionCreators,
 } from 'redux'
-import '../node_modules/todomvc-common/base.css'
-import '../node_modules/todomvc-app-css/index.css'
 import { Header, VisibleTodoList, Footer, SignOut } from './components'
-
-import { Todos, RootState } from './Types'
+import { Todos, RootState, Error, ErrorAction, AuthUser } from './Types'
 import { withFirebase } from './components/firebase'
-
 import Loading from './components/Loading'
 import { todosActions } from './store/todos'
 import { withAuthUser } from './components/session'
+import { Alert } from 'antd'
+import { removeError } from './store/errors'
 
 const { toggleAllTodos, fetchTodos } = todosActions
 
@@ -30,6 +28,9 @@ interface MainProps {
     signOut: () => void
   }
   isFetching: boolean
+  errors: Array<Error>
+  removeError: ActionCreator<ErrorAction>
+  authUser: AuthUser
 }
 
 const Main: React.FC<MainProps> = props => {
@@ -41,10 +42,13 @@ const Main: React.FC<MainProps> = props => {
     dispatch,
     fetchTodos,
     toggleAllTodos,
+    errors,
+    removeError,
+    authUser,
   } = props
 
   useEffect(() => {
-    fetchTodos()
+    fetchTodos({ userId: authUser.uid })
   }, [dispatch, fetchTodos])
 
   const handleToggleAllTodos = () => {
@@ -81,6 +85,19 @@ const Main: React.FC<MainProps> = props => {
           completedTodosCount={completedTodosCount}
         />
       </section>
+      {errors.map(error => (
+        <Alert
+          key={error.id}
+          message={error.title}
+          description={error.message}
+          type="error"
+          banner
+          closable
+          onClose={() => {
+            removeError(error.id)
+          }}
+        />
+      ))}
     </React.Fragment>
   )
 }
@@ -89,12 +106,16 @@ export default compose(
   withFirebase,
   withAuthUser,
   connect(
-    ({ todos: { todos, isFetching }, filters }: RootState) => {
+    ({
+      todos: { todos, isFetching },
+      filters,
+      errors: { errors },
+    }: RootState) => {
       const activeTodosCount = todos.filter(t => !t.completed).length
 
-      return { activeTodosCount, todos, filters, isFetching }
+      return { activeTodosCount, todos, filters, errors, isFetching }
     },
     (dispatch: Dispatch) =>
-      bindActionCreators({ fetchTodos, toggleAllTodos }, dispatch)
+      bindActionCreators({ fetchTodos, toggleAllTodos, removeError }, dispatch)
   )
 )(Main) as React.ComponentType

@@ -2,7 +2,7 @@ import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
 import { createReducer } from 'redux-starter-kit'
 import { Todos, TodoAction, TodosAction } from '../Types'
 import { api } from '../components/firebase'
-import { createAppAction } from '../utils'
+import { createAppAction, createError } from '../utils'
 import { Todos as TodosEntities } from './entities'
 
 const addTodo = createAppAction('add todo', 'todos')
@@ -18,11 +18,17 @@ const fetchTodos = createAppAction('fetch todos', 'todos', [
 
 export const todosActions = {
   addTodo: addTodo.local,
+  addTodoError: addTodo.error,
   removeTodo: removeTodo.local,
+  removeTodoError: removeTodo.error,
   updateTodo: updateTodo.local,
+  updateTodoError: updateTodo.error,
   toggleAllTodos: toggleAllTodos.local,
+  toggleAllTodosError: toggleAllTodos.error,
   clearCompleted: clearCompleted.local,
+  clearCompletedError: clearCompleted.error,
   fetchTodos: fetchTodos.requested,
+  fetchTodosError: fetchTodos.error,
 }
 
 interface ITodosState {
@@ -50,13 +56,23 @@ export const sagas = [
   {
     action: fetchTodos.requested,
     effect: takeLatest,
-    *saga() {
+    *saga(action: TodoAction) {
+      const {
+        payload: { userId },
+      } = action
       try {
-        const todos = yield call(api.fetchTodos)
+        const todos = yield call(api.fetchTodos, userId)
 
         yield put(fetchTodos.success({ todos }))
       } catch (error) {
-        yield put(fetchTodos.error({ error }))
+        yield put(
+          fetchTodos.error({
+            error: createError({
+              title: fetchTodos.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },
@@ -72,7 +88,14 @@ export const sagas = [
 
         yield put(addTodo.server({ todo: { ...todo, serverId } }))
       } catch (error) {
-        yield put(addTodo.error({ error }))
+        yield put(
+          addTodo.error({
+            error: createError({
+              title: addTodo.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },
@@ -88,7 +111,14 @@ export const sagas = [
 
         yield put(removeTodo.server())
       } catch (error) {
-        yield put(removeTodo.error({ error }))
+        yield put(
+          removeTodo.error({
+            error: createError({
+              title: removeTodo.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },
@@ -104,7 +134,14 @@ export const sagas = [
 
         yield put(updateTodo.server())
       } catch (error) {
-        yield put(updateTodo.error({ error }))
+        yield put(
+          updateTodo.error({
+            error: createError({
+              title: updateTodo.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },
@@ -120,7 +157,14 @@ export const sagas = [
 
         yield put(toggleAllTodos.server())
       } catch (error) {
-        yield put(toggleAllTodos.error({ error }))
+        yield put(
+          toggleAllTodos.error({
+            error: createError({
+              title: toggleAllTodos.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },
@@ -136,7 +180,14 @@ export const sagas = [
 
         yield put(clearCompleted.server())
       } catch (error) {
-        yield put(clearCompleted.error({ error }))
+        yield put(
+          clearCompleted.error({
+            error: createError({
+              title: clearCompleted.error.type,
+              message: error.toString(),
+            }),
+          })
+        )
       }
     },
   },

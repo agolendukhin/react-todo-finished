@@ -1,5 +1,15 @@
 import { find } from 'lodash'
-import { TodosState, TodosAction, TodoAction, Todo } from '../Types'
+import {
+  TodosState,
+  TodosAction,
+  TodoAction,
+  Todo,
+  Errors as TErrors,
+  ErrorAction,
+  Error,
+} from '../Types'
+
+import { createError } from '../utils'
 
 // https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 
@@ -39,5 +49,25 @@ export const Todos = {
   },
   clearCompletedLocal: (state: TodosState) => {
     state.todos = state.todos.filter(t => !t.completed)
+  },
+}
+
+export const Errors = {
+  addError: (state: TErrors, action: ErrorAction) => {
+    const {
+      payload: { error },
+    } = action
+
+    state.errors.push(error)
+  },
+  removeError: (state: TErrors, action: ErrorAction) => {
+    const {
+      payload: { errorId },
+    } = action
+
+    state.errors = state.errors.filter(error => error.id !== errorId)
+  },
+  removeErrors: (state: TErrors, action: ErrorAction) => {
+    state.errors = []
   },
 }

@@ -2,17 +2,20 @@ import { Todo, Todos } from '../../Types'
 import { db } from './Firebase'
 
 export default {
-  fetchTodos: () =>
-    db
+  fetchTodos: (userId: string) => {
+    return db
       .collection('todos')
+      .where('userId', '==', userId)
       .get()
       .then(querySnapshot =>
         querySnapshot.docs.map(doc => ({ ...doc.data(), serverId: doc.id }))
-      ),
+      )
+  },
 
   addTodo: (todo: Todo, userId: string) => {
     return db.collection('todos').add({ ...todo, userId })
   },
+
   removeTodo: (serverId: string) =>
     db
       .collection('todos')

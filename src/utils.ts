@@ -30,3 +30,15 @@ export const createAppAction = (
       return acc
     }, accInitial)
 }
+
+export const createError = ({
+  title,
+  message,
+}: {
+  title?: string
+  message: string
+}) => ({
+  id: 'id' + new Date().getTime(),
+  title,
+  message: `${message}`,
+})
