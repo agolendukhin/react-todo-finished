@@ -39,7 +39,6 @@ const Main: React.FC<MainProps> = props => {
     activeTodosCount,
     firebase,
     isFetching,
-    dispatch,
     fetchTodos,
     toggleAllTodos,
     errors,
@@ -49,7 +48,7 @@ const Main: React.FC<MainProps> = props => {
 
   useEffect(() => {
     fetchTodos({ userId: authUser.uid })
-  }, [dispatch, fetchTodos])
+  }, [fetchTodos, authUser])
 
   const handleToggleAllTodos = () => {
     const completed = activeTodosCount ? true : false

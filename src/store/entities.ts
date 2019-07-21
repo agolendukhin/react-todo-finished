@@ -6,10 +6,7 @@ import {
   Todo,
   Errors as TErrors,
   ErrorAction,
-  Error,
 } from '../Types'
-
-import { createError } from '../utils'
 
 // https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 
@@ -67,7 +64,7 @@ export const Errors = {
 
     state.errors = state.errors.filter(error => error.id !== errorId)
   },
-  removeErrors: (state: TErrors, action: ErrorAction) => {
+  removeErrors: (state: TErrors) => {
     state.errors = []
   },
 }

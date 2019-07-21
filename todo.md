@@ -15,3 +15,5 @@
 13. Add undo if server error
 14. Add drag n drop for todos
 15. Add Logging (Firebase vs sentry)
+16. Add SSL
+17. Add undo button
