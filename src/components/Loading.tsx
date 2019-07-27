@@ -1,10 +1,8 @@
-import styled from 'styled-components'
+import CenterComponent from './CenterComponent'
+import React from 'react'
 
-const Loading = styled.div`
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  right: 50%;
-`
+const Loading: React.FC<{}> = props => (
+  <CenterComponent>Loading...</CenterComponent>
+)
 
 export default Loading

@@ -14,7 +14,8 @@
 29. Add Logging (Firebase vs sentry)
 30. Add SSL
 31. Fix all bugs for production. Split dev / prod
-32. Add the app to golendukhin/todo
-33. Sign in to the center
+32. Add the app to todo.golendukhin.ru
+33. <strike>Sign in to the center</strike>
 34. Sign out to the bottom
 35. Fix checbox press on mobile
+36. <strike>fix loading positioning</strike>
