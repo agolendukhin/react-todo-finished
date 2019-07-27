@@ -13,3 +13,8 @@
 28. Fix css for mobile screens
 29. Add Logging (Firebase vs sentry)
 30. Add SSL
+31. Fix all bugs for production. Split dev / prod
+32. Add the app to golendukhin/todo
+33. Sign in to the center
+34. Sign out to the bottom
+35. Fix checbox press on mobile
