@@ -27,7 +27,12 @@ const composeEnhancers =
 
 const sagaMiddleware = createSagaMiddleware()
 
-const enhancer = composeEnhancers(applyMiddleware(sagaMiddleware, logger))
+let enhancer
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  enhancer = composeEnhancers(applyMiddleware(sagaMiddleware, logger))
+} else {
+  enhancer = composeEnhancers(applyMiddleware(sagaMiddleware))
+}
 
 interface Istore extends Store {
   runSaga: SagaMiddleware['run']
