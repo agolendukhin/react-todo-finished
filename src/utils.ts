@@ -42,3 +42,5 @@ export const createError = ({
   title,
   message: `${message}`,
 })
+
+export const appVersion = '0.0.1'

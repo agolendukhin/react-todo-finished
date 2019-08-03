@@ -1,6 +1,7 @@
 import 'antd/lib/alert/style/index.css'
 import 'todomvc-common/base.css'
 import 'todomvc-app-css/index.css'
+import './styles.css'
 import React, { ComponentType } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Provider as ReduxProvider } from 'react-redux'

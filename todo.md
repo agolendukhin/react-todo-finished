@@ -14,11 +14,11 @@
 - <strike>Sign in to the center</strike>
 - <strike>Fix sign out positioning for mobile</strike>
 - <strike>fix loading positioning</strike>
-
 - <strike>Remove redux logger from production</strike>
-- Show cross button on mobile
+- <strike>Change icon</strike>
+- <strike>Show cross button on mobile</strike>
+- <strike>Add app version</strike>
 - Fix checkbox press on mobile
-- Change icon
 - Add Logging (Firebase vs sentry)
 - Add SSL
 - Add the app to todo.golendukhin.ru
