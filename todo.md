@@ -18,7 +18,8 @@
 - <strike>Change icon</strike>
 - <strike>Show cross button on mobile</strike>
 - <strike>Add app version</strike>
-- Fix checkbox press on mobile
-- Add Logging (Firebase vs sentry)
-- Add SSL
+- <strike>Add SSL</strike>
+- <strike>Add Sentry</strike>
+
 - Add the app to todo.golendukhin.ru
+- Fix checkbox press on mobile
