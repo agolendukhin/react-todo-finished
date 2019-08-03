@@ -8,7 +8,7 @@ const AppVersion = styled.div`
   right: 40px;
   /* Portrait iPhones */
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
-    top: 10px;
+    bottom: 10px;
     right: 10px;
   }
   color: #4d4d4d;

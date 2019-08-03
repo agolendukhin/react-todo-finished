@@ -20,6 +20,6 @@
 - <strike>Add app version</strike>
 - <strike>Add SSL</strike>
 - <strike>Add Sentry</strike>
-
-- Add the app to todo.golendukhin.ru
+- <strike>Add the app to todo.golendukhin.ru</strike>
+- <strike>Fix version position on mobile</strike>
 - Fix checkbox press on mobile
