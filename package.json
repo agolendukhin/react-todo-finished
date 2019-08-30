@@ -5,6 +5,7 @@
   "homepage": "https://todo.golendukhin.ru",
   "dependencies": {
     "@sentry/browser": "^5.5.0",
+    "@types/enzyme": "^3.10.3",
     "@types/react-router": "^5.0.3",
     "@types/react-router-dom": "^4.3.4",
     "@types/styled-components": "^4.1.16",
@@ -47,11 +48,21 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.8",
+    "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.135",
     "@types/react": "^16.8.22",
     "@types/react-dom": "^16.8.4",
     "@types/react-redux": "^7.1.1",
     "@types/redux-logger": "^3.0.7",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.4.0",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.5.2"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   }
 }
