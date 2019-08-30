@@ -15,7 +15,7 @@ import { todosActions } from './store/todos'
 import { withAuthUser } from './components/session'
 import { Alert } from 'antd'
 import { removeError } from './store/errors'
-import AppVersion from './components/AppVersion'
+import { AppVersion } from './components/AppVersion'
 
 const { toggleAllTodos, fetchTodos } = todosActions
 

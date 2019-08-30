@@ -1,5 +1,5 @@
 import React from 'react'
-import { appVersion } from '../utils'
+import { appVersion } from '../../utils'
 import styled from 'styled-components'
 
 const AppVersion = styled.div`
