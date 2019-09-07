@@ -12,7 +12,7 @@ import classNames from 'classnames'
 import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
 import { Todo, RootState } from '../Types'
-import { withFirebase } from './firebase'
+import { withFirebase } from '../firebase'
 import { todosActions } from '../store/todos'
 
 const { removeTodo } = todosActions
@@ -67,6 +67,7 @@ const getLiClassName = ({ completed, editing = false }: ClassNamesProps) =>
     editing,
   })
 
+//why firebase ?
 export default compose(
   withFirebase,
   connect(

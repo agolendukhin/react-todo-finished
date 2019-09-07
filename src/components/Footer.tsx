@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Filters from './Filters'
-import ClearCompletedButton from './ClearCompleted'
+import ClearCompletedButton from './ClearCompleted/ClearCompleted'
 import { Todos, RootState } from '../Types'
 
 interface Props {

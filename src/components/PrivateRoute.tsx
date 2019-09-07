@@ -7,6 +7,7 @@ interface IPrivateRoute {
   [k: string]: any
 }
 
+// how to test private routes ?
 const PrivateRoute = ({ component: Component, ...rest }: IPrivateRoute) => {
   return (
     <Route

@@ -7,9 +7,9 @@ import {
   Action,
   bindActionCreators,
 } from 'redux'
-import { RootState, Todos } from '../Types'
-import { withFirebase } from './firebase'
-import { todosActions } from '../store/todos'
+import { RootState, Todos } from '../../Types'
+import { withFirebase } from '../../firebase'
+import { todosActions } from '../../store/todos'
 
 const { clearCompleted } = todosActions
 
@@ -32,6 +32,7 @@ const ClearCompletedComponent: React.FC<Props> = ({
     </button>
   ) : null
 
+// why here firebase?
 export default compose(
   withFirebase,
   connect(

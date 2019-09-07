@@ -63,3 +63,6 @@ export type AuthUser = {
 }
 
 export type Action = TodoAction | TodosAction
+
+export interface IAnyState {}
+export type TReducer = (state: IAnyState, action: Action) => IAnyState

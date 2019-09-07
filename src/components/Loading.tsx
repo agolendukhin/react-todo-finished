@@ -1,4 +1,4 @@
-import CenterComponent from './CenterComponent'
+import CenterComponent from './CenterComponent/CenterComponent'
 import React from 'react'
 
 const Loading: React.FC<{}> = props => (

@@ -14,7 +14,7 @@ import {
 } from 'redux'
 import { get } from 'lodash'
 import { Todo, RootState } from '../Types'
-import { withFirebase } from './firebase'
+import { withFirebase } from '../firebase'
 import { todosActions } from '../store/todos'
 
 const { updateTodo } = todosActions
@@ -58,6 +58,7 @@ const EditInputComponent: React.FC<Props> = props => {
   )
 }
 
+// why firebase?
 export default compose(
   withFirebase,
   connect(

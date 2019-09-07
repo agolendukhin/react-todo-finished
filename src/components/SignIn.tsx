@@ -1,11 +1,11 @@
 import React from 'react'
 import firebase from 'firebase'
-import { withFirebase } from './firebase'
+import { withFirebase } from '../firebase'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { History } from 'history'
-import { default as SignIn } from './Button'
-import CenterComponent from './CenterComponent'
+import { Button } from './Button'
+import CenterComponent from './CenterComponent/CenterComponent'
 
 interface Ifirebase extends firebase.app.App {
   signInWithPopUp(): Promise<any>
@@ -20,12 +20,12 @@ const SignInScreen: React.FC<Props> = props => {
   return (
     <CenterComponent>
       <h1 style={{ marginLeft: '-8px' }}>Todos</h1>
-      <SignIn
+      <Button
         onClick={() =>
           props.firebase.signInWithPopUp().then(() => props.history.push('/'))
         }>
         Sign in
-      </SignIn>
+      </Button>
     </CenterComponent>
   )
 }

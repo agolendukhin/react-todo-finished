@@ -1,6 +1,8 @@
-import { Todos } from './Types'
+import { Action } from 'redux'
+import { Todos, IAnyState, TReducer } from './Types'
 import { get, maxBy } from 'lodash'
 import { createAction, PayloadActionCreator } from 'redux-starter-kit'
+import configureMockStore from 'redux-mock-store'
 
 export const getNewId = (array: Todos) => {
   let lastId = get(maxBy(array, 'id'), 'id', 0)
@@ -44,3 +46,17 @@ export const createError = ({
 })
 
 export const appVersion = '0.0.1'
+
+const createMockStore = configureMockStore()
+const createState = (initialState: IAnyState, rootReducer: TReducer) => (
+  actions: Action[]
+) => actions.reduce(rootReducer, initialState)
+
+export const createMockStoreWithReducers = (
+  initialState: IAnyState,
+  rootReducer: TReducer
+) => {
+  const state = createState(initialState, rootReducer)
+  const store = createMockStore(state)
+  return store
+}

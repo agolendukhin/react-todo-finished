@@ -1,4 +1,4 @@
-export { default as ClearCompleted } from './ClearCompleted'
+export { default as ClearCompleted } from './ClearCompleted/ClearCompleted'
 export { default as EditInput } from './EditInput'
 export { default as Filters } from './Filters'
 export { default as Footer } from './Footer'

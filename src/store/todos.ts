@@ -1,7 +1,7 @@
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
 import { createReducer } from 'redux-starter-kit'
 import { Todos, TodoAction, TodosAction } from '../Types'
-import { api } from '../components/firebase'
+import { api } from '../firebase'
 import { createAppAction, createError } from '../utils'
 import { Todos as TodosEntities } from './entities'
 
