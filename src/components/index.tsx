@@ -1,5 +1,5 @@
 export { default as ClearCompleted } from './ClearCompleted/ClearCompleted'
-export { default as EditInput } from './EditInput'
+export { default as EditInput } from './EditInput/EditInput'
 export { default as Filters } from './Filters'
 export { default as Footer } from './Footer'
 export { default as Header } from './Header'

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Dispatch, ActionCreator, Action, bindActionCreators } from 'redux'
 import classNames from 'classnames'
 import ToggleTodo from './ToggleTodo'
-import EditInput from './EditInput'
+import EditInput from './EditInput/EditInput'
 import { Todo, RootState } from '../Types'
 import { todosActions } from '../store/todos'
 
@@ -38,7 +38,7 @@ const TodoComponent: React.FC<Props> = props => {
   const resetLiClassName = () => setClassName(getLiClassName({ completed }))
 
   return (
-    <li className={className}>
+    <li className={className} id={`${todo.id}`}>
       <div className="view">
         <ToggleTodo todo={todo} />
         <label onDoubleClick={handleDoubleClick}>{todo.text}</label>

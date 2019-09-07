@@ -7,8 +7,8 @@ import React, {
 import { connect } from 'react-redux'
 import { Dispatch, Action, ActionCreator, bindActionCreators } from 'redux'
 import { get } from 'lodash'
-import { Todo, RootState } from '../Types'
-import { todosActions } from '../store/todos'
+import { Todo, RootState } from '../../Types'
+import { todosActions } from '../../store/todos'
 
 const { updateTodo } = todosActions
 
@@ -54,4 +54,4 @@ const EditInputComponent: React.FC<Props> = props => {
 export default connect(
   ({ todos: { todos } }: RootState) => ({ todos }),
   (dispatch: Dispatch) => bindActionCreators({ updateTodo }, dispatch)
-)(EditInputComponent)
+)(EditInputComponent) as any

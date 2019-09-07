@@ -1,5 +1,5 @@
 import { Action } from 'redux'
-import { Todos, IAnyState, TReducer } from './Types'
+import { Todos, IAnyState, TReducer, RootState } from './Types'
 import { get, maxBy } from 'lodash'
 import { createAction, PayloadActionCreator } from 'redux-starter-kit'
 import configureMockStore from 'redux-mock-store'
@@ -60,3 +60,5 @@ export const createMockStoreWithReducers = (
   const store = createMockStore(state)
   return store
 }
+
+export const todosSelector = (state: RootState) => state.todos.todos
