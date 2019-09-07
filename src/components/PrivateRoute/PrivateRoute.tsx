@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import Loading from './Loading'
+import Loading from '../Loading'
 
 interface IPrivateRoute {
   component: ComponentType<any>
@@ -30,4 +30,4 @@ const PrivateRoute = ({ component: Component, ...rest }: IPrivateRoute) => {
   )
 }
 
-export default PrivateRoute
+export default PrivateRoute as any
