@@ -25,4 +25,9 @@ export const initialStateMock = {
       },
     ],
   },
+  filters: {
+    all: false,
+    active: true,
+    completed: false,
+  },
 } as RootState

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Filters from './Filters'
+import Filters from './Filters/Filters'
 import ClearCompletedButton from './ClearCompleted/ClearCompleted'
 import { Todos, RootState } from '../Types'
 
