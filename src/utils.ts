@@ -62,3 +62,4 @@ export const createMockStoreWithReducers = (
 }
 
 export const todosSelector = (state: RootState) => state.todos.todos
+export const errorsSelector = (state: RootState) => state.errors.errors

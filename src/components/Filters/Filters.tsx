@@ -21,7 +21,6 @@ const FiltersComponent: React.FC<Props> = props => {
   return (
     <ul className="filters">
       {Object.entries(filters).map(([filter, activated], index) => {
-        console.log({ filter, activated })
         return (
           <li key={index}>
             <a

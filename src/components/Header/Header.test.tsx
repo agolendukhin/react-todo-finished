@@ -2,10 +2,11 @@ import React from 'react'
 import { combineReducers } from 'redux'
 import { mount } from 'enzyme'
 import Header from './Header'
-import { initialStateMock } from '../../mock'
+import { initialStateMock, firebaseMock } from '../../mockData'
 import { RootState } from '../../Types'
 import * as reducers from '../../store/reducers'
 import { createMockStoreWithReducers, todosSelector } from '../../utils'
+import { FirebaseContext } from '../../firebase'
 
 const rootReducer = combineReducers(reducers)
 
@@ -19,7 +20,11 @@ describe('Header', () => {
     let todos = todosSelector(store.getState() as RootState)
     const initialTodosLength = todos.length
 
-    const component = mount(<Header store={store}></Header>)
+    const component = mount(
+      <FirebaseContext.Provider value={firebaseMock}>
+        <Header store={store}></Header>
+      </FirebaseContext.Provider>
+    )
 
     const newTodoText = 'New todo'
 

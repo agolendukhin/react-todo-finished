@@ -74,7 +74,11 @@ const Main: React.FC<MainProps> = props => {
                 checked={!activeTodosCount}
                 onChange={() => {}}
               />
-              <label onClick={handleToggleAllTodos} htmlFor="toggle-all" />
+              <label
+                id="toggle-all-label"
+                onClick={handleToggleAllTodos}
+                htmlFor="toggle-all"
+              />
             </React.Fragment>
           ) : null}
           <VisibleTodoList />
@@ -117,4 +121,4 @@ export default compose(
     (dispatch: Dispatch) =>
       bindActionCreators({ fetchTodos, toggleAllTodos, removeError }, dispatch)
   )
-)(Main) as React.ComponentType
+)(Main) as any

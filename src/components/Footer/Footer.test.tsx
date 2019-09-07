@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
 import Footer from './Footer'
-import { initialStateMock } from '../../mock'
+import { initialStateMock } from '../../mockData'
 import * as reducers from '../../store/reducers'
 import { createMockStoreWithReducers } from '../../utils'
 

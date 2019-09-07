@@ -23,7 +23,7 @@ export type Error = {
 }
 
 export type Errors = {
-  errors: Array<Error>
+  errors: Error[]
 }
 
 export interface TodosState {
