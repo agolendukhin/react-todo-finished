@@ -18,8 +18,6 @@ const FiltersComponent: React.FC<Props> = props => {
     if (filter) toggleFilter(filter)
   }, [toggleFilter])
 
-  console.log({ filters: props.filters })
-
   return (
     <ul className="filters">
       {Object.entries(filters).map(([filter, activated], index) => {

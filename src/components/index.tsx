@@ -1,7 +1,7 @@
 export { ClearCompleted } from './ClearCompleted'
 export { EditInput } from './EditInput'
 export { Filters } from './Filters'
-export { default as Footer } from './Footer'
+export { Footer } from './Footer'
 export { default as Header } from './Header'
 export { default as Loading } from './Loading'
 export { default as PrivateRoute } from './PrivateRoute'

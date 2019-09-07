@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Filters from './Filters/Filters'
-import ClearCompletedButton from './ClearCompleted/ClearCompleted'
-import { Todos, RootState } from '../Types'
+import { Filters } from '../Filters'
+import ClearCompletedButton from '../ClearCompleted/ClearCompleted'
+import { Todos, RootState } from '../../Types'
 
 interface Props {
   todos: Todos
@@ -20,7 +20,7 @@ const FooterComponent: React.FC<Props> = props => {
   return (
     <footer className="footer">
       <span className="todo-count">
-        <strong>{activeTodosCount}</strong>
+        <strong id="active-count">{activeTodosCount}</strong>
         <span>{activeTodosCount === 1 ? ' item' : ' items'} left</span>
       </span>
       <Filters />
@@ -32,4 +32,4 @@ const FooterComponent: React.FC<Props> = props => {
 export default connect(({ todos: { todos }, filters }: RootState) => ({
   todos,
   filters,
-}))(FooterComponent)
+}))(FooterComponent) as any
