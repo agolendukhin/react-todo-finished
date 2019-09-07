@@ -3,10 +3,10 @@ import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { Dispatch, ActionCreator, Action, bindActionCreators } from 'redux'
 import classNames from 'classnames'
-import ToggleTodo from './ToggleTodo'
-import EditInput from './EditInput/EditInput'
-import { Todo, RootState } from '../Types'
-import { todosActions } from '../store/todos'
+import ToggleTodo from '../ToggleTodo'
+import { EditInput } from '../EditInput'
+import { Todo, RootState } from '../../Types'
+import { todosActions } from '../../store/todos'
 
 const { removeTodo } = todosActions
 

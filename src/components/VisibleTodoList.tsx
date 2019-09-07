@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { findKey } from 'lodash'
-import Todo from './Todo'
+import { Todo } from './Todo'
 import { Todos, Filters, RootState } from '../Types'
 
 interface Props {
