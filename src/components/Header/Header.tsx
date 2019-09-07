@@ -13,11 +13,11 @@ import {
   bindActionCreators,
 } from 'redux'
 import styled from 'styled-components'
-import { getNewId } from '../utils'
+import { getNewId } from '../../utils'
 import { get } from 'lodash'
-import { Todos, RootState, AuthUser } from '../Types'
-import { todosActions } from '../store/todos'
-import { withAuthUser } from '../session'
+import { Todos, RootState, AuthUser } from '../../Types'
+import { todosActions } from '../../store/todos'
+import { withAuthUser } from '../../session'
 
 const { addTodo } = todosActions
 
@@ -90,4 +90,4 @@ export default compose(
     ({ todos: { todos } }: RootState) => ({ todos }),
     (dispatch: Dispatch) => bindActionCreators({ addTodo }, dispatch)
   )
-)(HeaderComponent) as React.ComponentType
+)(HeaderComponent) as any
