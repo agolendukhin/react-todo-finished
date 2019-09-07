@@ -1,8 +1,8 @@
+import { mount, shallow } from 'enzyme'
 import React from 'react'
-import { mount, render, shallow } from 'enzyme'
-import { BrowserRouter, Route, Redirect } from 'react-router-dom'
-import PrivateRoute from './PrivateRoute'
+import { BrowserRouter } from 'react-router-dom'
 import Loading from '../Loading'
+import PrivateRoute from './PrivateRoute'
 
 describe('Private Route', () => {
   it('should render test component', () => {

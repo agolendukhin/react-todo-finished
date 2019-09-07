@@ -3,9 +3,8 @@ import { combineReducers } from 'redux'
 import { mount } from 'enzyme'
 import Filters from './Filters'
 import { initialStateMock } from '../../mock'
-import { RootState, Todo } from '../../Types'
 import * as reducers from '../../store/reducers'
-import { createMockStoreWithReducers, todosSelector } from '../../utils'
+import { createMockStoreWithReducers } from '../../utils'
 
 const rootReducer = combineReducers(reducers)
 
