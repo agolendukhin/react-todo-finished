@@ -7,9 +7,9 @@ import {
   ActionCreator,
   bindActionCreators,
 } from 'redux'
-import { Todo, RootState } from '../Types'
-import { withFirebase } from '../firebase'
-import { todosActions } from '../store/todos'
+import { Todo, RootState } from '../../Types'
+import { withFirebase } from '../../firebase'
+import { todosActions } from '../../store/todos'
 
 const { updateTodo } = todosActions
 
