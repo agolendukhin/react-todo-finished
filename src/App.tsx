@@ -8,11 +8,9 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './store/store'
 import Firebase, { FirebaseContext } from './firebase'
-import { AuthUserContext } from './session'
-import Main from './Main'
+import { Main } from './components/Main'
 import { SignIn, PrivateRoute } from './components'
 import { IFirebaseContext } from './firebase/context'
-import { IAuthUserContext } from './session/context'
 
 const App: React.FC<{}> = () => (
   <Firebase>
@@ -21,29 +19,27 @@ const App: React.FC<{}> = () => (
       loading,
       ...firebase
     }: {
-      user: IAuthUserContext
+      user: firebase.User
       loading: boolean
       firebase: IFirebaseContext
     }) => {
       return (
-        <AuthUserContext.Provider value={user}>
-          <FirebaseContext.Provider value={firebase}>
-            <ReduxProvider store={store}>
-              <PersistGate loading={null} persistor={persistor}>
-                <BrowserRouter>
-                  <PrivateRoute
-                    exact
-                    path="/"
-                    component={Main as ComponentType}
-                    isAuthenticating={!user && loading}
-                    isAuthenticated={user && !loading}
-                  />
-                  <Route path="/signin" component={SignIn as ComponentType} />
-                </BrowserRouter>
-              </PersistGate>
-            </ReduxProvider>
-          </FirebaseContext.Provider>
-        </AuthUserContext.Provider>
+        <FirebaseContext.Provider value={{ ...firebase, user }}>
+          <ReduxProvider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <BrowserRouter>
+                <PrivateRoute
+                  exact
+                  path="/"
+                  component={Main as ComponentType}
+                  isAuthenticating={!user && loading}
+                  isAuthenticated={user && !loading}
+                />
+                <Route path="/signin" component={SignIn as ComponentType} />
+              </BrowserRouter>
+            </PersistGate>
+          </ReduxProvider>
+        </FirebaseContext.Provider>
       )
     }}
   </Firebase>

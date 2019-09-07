@@ -15,20 +15,25 @@ import {
 import styled from 'styled-components'
 import { getNewId } from '../../utils'
 import { get } from 'lodash'
-import { Todos, RootState, AuthUser } from '../../Types'
+import { Todos, RootState } from '../../Types'
 import { todosActions } from '../../store/todos'
-import { withAuthUser } from '../../session'
+import { withFirebase } from '../../firebase/context'
 
 const { addTodo } = todosActions
 
 interface Props {
   todos: Todos
   addTodo: ActionCreator<Action>
-  authUser: AuthUser
+  firebase: {
+    user: firebase.User
+  }
 }
 
 const HeaderComponent: React.FC<Props> = props => {
-  const { todos, authUser } = props
+  const {
+    todos,
+    firebase: { user },
+  } = props
   const [value, setValue] = useState('')
 
   const addTodo = () => {
@@ -39,7 +44,7 @@ const HeaderComponent: React.FC<Props> = props => {
         completed: false,
         serverId: '',
       },
-      userId: authUser.uid,
+      userId: user.uid,
     })
 
     setValue('')
@@ -85,7 +90,7 @@ const PlusButton = styled.label`
 `
 
 export default compose(
-  withAuthUser,
+  withFirebase,
   connect(
     ({ todos: { todos } }: RootState) => ({ todos }),
     (dispatch: Dispatch) => bindActionCreators({ addTodo }, dispatch)

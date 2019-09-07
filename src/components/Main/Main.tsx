@@ -7,15 +7,14 @@ import {
   ActionCreator,
   bindActionCreators,
 } from 'redux'
-import { Header, VisibleTodoList, Footer, SignOut } from './components'
-import { Todos, RootState, Error, ErrorAction, AuthUser } from './Types'
-import { withFirebase } from './firebase'
-import Loading from './components/Loading'
-import { todosActions } from './store/todos'
-import { withAuthUser } from './session'
+import { Header, VisibleTodoList, Footer, SignOut } from '..'
+import { Todos, RootState, Error, ErrorAction } from '../../Types'
+import { withFirebase } from '../../firebase'
+import Loading from '../Loading'
+import { todosActions } from '../../store/todos'
 import { Alert } from 'antd'
-import { removeError } from './store/errors'
-import { AppVersion } from './components/AppVersion'
+import { removeError } from '../../store/errors'
+import { AppVersion } from '../AppVersion'
 
 const { toggleAllTodos, fetchTodos } = todosActions
 
@@ -27,11 +26,11 @@ interface MainProps {
   toggleAllTodos: ActionCreator<Action>
   firebase: {
     signOut: () => void
+    user: firebase.User
   }
   isFetching: boolean
   errors: Array<Error>
   removeError: ActionCreator<ErrorAction>
-  authUser: AuthUser
 }
 
 const Main: React.FC<MainProps> = props => {
@@ -44,12 +43,12 @@ const Main: React.FC<MainProps> = props => {
     toggleAllTodos,
     errors,
     removeError,
-    authUser,
+    firebase: { user },
   } = props
 
   useEffect(() => {
-    fetchTodos({ userId: authUser.uid })
-  }, [fetchTodos, authUser])
+    fetchTodos({ userId: user.uid })
+  }, [fetchTodos, user])
 
   const handleToggleAllTodos = () => {
     const completed = activeTodosCount ? true : false
@@ -105,7 +104,6 @@ const Main: React.FC<MainProps> = props => {
 
 export default compose(
   withFirebase,
-  withAuthUser,
   connect(
     ({
       todos: { todos, isFetching },
