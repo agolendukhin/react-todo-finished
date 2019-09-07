@@ -5,16 +5,9 @@ import React, {
   ChangeEventHandler,
 } from 'react'
 import { connect } from 'react-redux'
-import {
-  compose,
-  Dispatch,
-  Action,
-  ActionCreator,
-  bindActionCreators,
-} from 'redux'
+import { Dispatch, Action, ActionCreator, bindActionCreators } from 'redux'
 import { get } from 'lodash'
 import { Todo, RootState } from '../Types'
-import { withFirebase } from '../firebase'
 import { todosActions } from '../store/todos'
 
 const { updateTodo } = todosActions
@@ -58,11 +51,7 @@ const EditInputComponent: React.FC<Props> = props => {
   )
 }
 
-// why firebase?
-export default compose(
-  withFirebase,
-  connect(
-    ({ todos: { todos } }: RootState) => ({ todos }),
-    (dispatch: Dispatch) => bindActionCreators({ updateTodo }, dispatch)
-  )
-)(EditInputComponent) as any
+export default connect(
+  ({ todos: { todos } }: RootState) => ({ todos }),
+  (dispatch: Dispatch) => bindActionCreators({ updateTodo }, dispatch)
+)(EditInputComponent)

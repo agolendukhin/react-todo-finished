@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
-import {
-  compose,
-  Dispatch,
-  ActionCreator,
-  Action,
-  bindActionCreators,
-} from 'redux'
+import { Dispatch, ActionCreator, Action, bindActionCreators } from 'redux'
 import classNames from 'classnames'
 import ToggleTodo from './ToggleTodo'
 import EditInput from './EditInput'
 import { Todo, RootState } from '../Types'
-import { withFirebase } from '../firebase'
 import { todosActions } from '../store/todos'
 
 const { removeTodo } = todosActions
@@ -67,11 +60,7 @@ const getLiClassName = ({ completed, editing = false }: ClassNamesProps) =>
     editing,
   })
 
-//why firebase ?
-export default compose(
-  withFirebase,
-  connect(
-    ({ todos: { todos } }: RootState) => ({ todos }),
-    (dispatch: Dispatch) => bindActionCreators({ removeTodo }, dispatch)
-  )
+export default connect(
+  ({ todos: { todos } }: RootState) => ({ todos }),
+  (dispatch: Dispatch) => bindActionCreators({ removeTodo }, dispatch)
 )(TodoComponent) as any

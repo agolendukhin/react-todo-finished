@@ -16,7 +16,6 @@ import styled from 'styled-components'
 import { getNewId } from '../utils'
 import { get } from 'lodash'
 import { Todos, RootState, AuthUser } from '../Types'
-import { withFirebase } from '../firebase'
 import { todosActions } from '../store/todos'
 import { withAuthUser } from '../session'
 
@@ -85,9 +84,7 @@ const PlusButton = styled.label`
   color: #bbbbbb;
 `
 
-//why firebase?
 export default compose(
-  withFirebase,
   withAuthUser,
   connect(
     ({ todos: { todos } }: RootState) => ({ todos }),
