@@ -4,6 +4,8 @@ import { get, maxBy } from 'lodash'
 import { createAction, PayloadActionCreator } from 'redux-starter-kit'
 import configureMockStore from 'redux-mock-store'
 
+export const APP_NAME = 'Todo Cosmo'
+
 export const getNewId = (array: Todos) => {
   let lastId = get(maxBy(array, 'id'), 'id', 0)
   return ++lastId

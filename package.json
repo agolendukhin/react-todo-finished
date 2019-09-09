@@ -8,6 +8,7 @@
     "@types/enzyme": "^3.10.3",
     "@types/react-router": "^5.0.3",
     "@types/react-router-dom": "^4.3.4",
+    "@types/storybook__react": "^4.0.2",
     "@types/styled-components": "^4.1.16",
     "antd": "^3.20.5",
     "classnames": "^2.2.6",
@@ -34,7 +35,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "browserslist": {
     "production": [
@@ -49,6 +52,10 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^5.1.11",
+    "@storybook/addon-links": "^5.1.11",
+    "@storybook/addons": "^5.1.11",
+    "@storybook/react": "^5.1.11",
     "@types/classnames": "^2.2.8",
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.135",

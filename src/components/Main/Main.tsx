@@ -10,7 +10,7 @@ import {
 import { Header, VisibleTodoList, Footer, SignOut } from '..'
 import { Todos, RootState, Error, ErrorAction } from '../../Types'
 import { withFirebase } from '../../firebase'
-import Loading from '../Loading'
+import Loading from '../Loading/Loading'
 import { todosActions } from '../../store/todos'
 import { Alert } from 'antd'
 import { removeError } from '../../store/errors'

@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import Loading from '../Loading'
+import Loading from '../Loading/Loading'
 
 interface IPrivateRoute {
   component: ComponentType<any>

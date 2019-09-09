@@ -1,7 +1,7 @@
 import { mount, shallow } from 'enzyme'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import Loading from '../Loading'
+import Loading from '../Loading/Loading'
 import PrivateRoute from './PrivateRoute'
 
 describe('Private Route', () => {

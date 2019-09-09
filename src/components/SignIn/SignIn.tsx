@@ -1,11 +1,11 @@
 import React from 'react'
 import firebase from 'firebase'
-import { withFirebase } from '../firebase'
+import { withFirebase } from '../../firebase'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { History } from 'history'
-import { Button } from './Button'
-import CenterComponent from './CenterComponent/CenterComponent'
+import { Button } from '../Button'
+import { CenterComponent } from '../CenterComponent'
 
 interface Ifirebase extends firebase.app.App {
   signInWithPopUp(): Promise<any>
