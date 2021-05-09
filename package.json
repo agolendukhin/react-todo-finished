@@ -14,7 +14,7 @@
     "classnames": "^2.2.6",
     "firebase": "^6.2.4",
     "git": "^0.1.5",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
